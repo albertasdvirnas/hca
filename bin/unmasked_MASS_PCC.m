@@ -17,5 +17,6 @@ function [dist] = unmasked_MASS_PCC(longVec, shortVec, shortVecBit,k)
     dist(1,:) = circshift(dist(1,:),[0,1-find(shortVecBit,1,'first')]);
     dist(2,:) = circshift(dist(2,:),[0,1-find(shortVecBit,1,'first')]);
     
+    
 end
 

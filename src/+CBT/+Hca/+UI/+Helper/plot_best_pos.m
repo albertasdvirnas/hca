@@ -9,8 +9,12 @@ function [fig1] = plot_best_pos( fig1,comparisonStruct, numBar, sets, markers,le
 
     p3 = plot(pos+posShift,1:size(pos,1),'ob');
     p3(1).Marker = markers(1);
+    try
     p3(2).Marker = markers(2);
+    end
+    try
     p3(3).Marker = markers(3);
+    end
     hold on
   
     if  sets.genConsensus == 1
@@ -21,8 +25,13 @@ function [fig1] = plot_best_pos( fig1,comparisonStruct, numBar, sets, markers,le
     
     xlabel('Best position (px)','Interpreter','latex')  
     ylabel('Barcode nr.','Interpreter','latex')
-    legend({'$\hat C$','$C_2$','$C_3$','Consensus line'},'Location','ne','Interpreter','latex')
-    ylim([0,numBar+2])
+    if size(pos,2) == 1
+        legend({'$\hat C$','Consensus line'},'Location','ne','Interpreter','latex')
+    else
+        legend({'$\hat C$','$C_2$','$C_3$','Consensus line'},'Location','ne','Interpreter','latex')
+    end
+    
+    ylim([0,size(pos,1)+2])
     
 end
 

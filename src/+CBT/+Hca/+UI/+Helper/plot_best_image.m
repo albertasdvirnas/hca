@@ -1,6 +1,6 @@
 function [] = plot_best_image(fig1, barcodeGen, consensusStruct, comparisonStruct,theoryStruct, maxcoef )
     % plot_best_bar
-    
+ 
     % plots best barcode vs theory in case barcode is always larger than
     % theory
 
@@ -26,8 +26,13 @@ function [] = plot_best_image(fig1, barcodeGen, consensusStruct, comparisonStruc
         expBar = barcodeGen{ii}.rawBarcode;
         expBit = barcodeGen{ii}.rawBitmask;
     catch
-        expBar = consensusStruct.rawBarcode;
-        expBit = consensusStruct.rawBitmask;  
+        try
+            expBar = consensusStruct.rawBarcode;
+            expBit = consensusStruct.rawBitmask;  
+        catch
+            expBar = consensusStruct{ii-length(barcodeGen)}.rawBarcode;
+            expBit = consensusStruct{ii-length(barcodeGen)}.rawBitmask;         
+        end
     end
     expLen = length(expBar);
 

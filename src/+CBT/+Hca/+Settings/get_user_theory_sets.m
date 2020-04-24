@@ -5,7 +5,7 @@ function [ sets ] = get_user_theory_sets( sets )
         try 
             fid = fopen(sets.fastas); 
             fastaNames = textscan(fid,'%s','delimiter','\n'); fclose(fid);
-            for i=1:length(fastaNames)
+            for i=1:length(fastaNames{1})
                 [FILEPATH,NAME,EXT] = fileparts(fastaNames{1}{i});
 
                 sets.theoryNames{i} = strcat(NAME,EXT);

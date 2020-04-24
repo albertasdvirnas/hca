@@ -79,9 +79,8 @@ function [dist] = MASS_PCC(x, y, k)
         Y = fft(y2);
         Z = X.*Y;
         z = ifft(Z)./m;
-
+        
         dist(2,j+1:n-m+1) = z(m:k)./(sigmax(j+m:n));
-
     end
     
 end

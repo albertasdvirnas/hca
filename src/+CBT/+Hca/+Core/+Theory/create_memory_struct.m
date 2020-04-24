@@ -22,9 +22,23 @@ function [chr1,header] = create_memory_struct(file)
     newLine = sprintf('\n');
 
     blockSize = 2^20;
-    while ~feof(fidIn)
+    while (~feof(fidIn))
         % Read in the data
         charData = fread(fidIn,blockSize,'*char')';
+        strPos = strfind(charData,'>');
+        if strPos
+            charData = charData(1:min(1,strPos(1)-1));
+            % means there are more than two sequences in this file, but we
+            % only want the first one.
+           charData = strrep(charData,newLine,'');
+            charData = erase(charData,char(13));
+
+            % Convert to integers
+            intData = nt2int(charData);
+            % Write to the new file
+            fwrite(fidOut,intData,'uint8');
+            break;
+        end
         % Remove new lines
         charData = strrep(charData,newLine,'');
         charData = erase(charData,char(13));

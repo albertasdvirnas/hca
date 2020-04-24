@@ -66,7 +66,15 @@ function [ barcodeGen ] = gen_barcodes( kymoStructs, sets )
 	%% Prestretch barcodes to the same length
     % convert to common length, if chosen
     if  sets.genConsensus == 1
-        commonLength = ceil(mean(cellfun(@(x) length(x.rawBarcode),barcodeGen)));
+        allLengths = cellfun(@(x) length(x.rawBarcode),barcodeGen);
+        commonLength = ceil(mean(allLengths));
+        stretchings = commonLength./allLengths;
+        strMin = min(stretchings);
+        strMax =  max(stretchings);
+        disp(strcat(['Barcodes are being stretched between ' num2str(strMin) ' and ' num2str(strMax)]));
+
+        commonLength = ceil(commonLength);
+
         
         import CBT.Consensus.Core.convert_barcodes_to_common_length;
         import CBT.Consensus.Core.convert_bitmasks_to_common_length;
@@ -74,6 +82,7 @@ function [ barcodeGen ] = gen_barcodes( kymoStructs, sets )
         for i=1:numBar % change this to a simpler function
             [barcodeGen{i}.stretchedBarcode] = cell2mat(convert_barcodes_to_common_length({barcodeGen{i}.rawBarcode}, commonLength));
             [barcodeGen{i}.stretchedrawBitmask] = cell2mat(convert_bitmasks_to_common_length({barcodeGen{i}.rawBitmask}, commonLength));
+            barcodeGen{i}.stretchFactor = stretchings(i);
         end  
     end
   

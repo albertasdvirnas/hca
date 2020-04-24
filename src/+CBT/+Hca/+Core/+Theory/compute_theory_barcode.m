@@ -20,6 +20,16 @@ function [ theory, header] = compute_theory_barcode( name,sets)
     % create an easier accessible file
     import CBT.Hca.Core.Theory.create_memory_struct;
     [chr1,header] = create_memory_struct(name);
+    
+    if length(chr1.Data) < sets.theoryGen.k
+        disp(strcat(['Theory ' name ' skipped because length < theoryGen.k =' num2str(sets.theoryGen.k) ]));
+        theory = [];
+%         header = [];
+        delete(chr1.Filename);
+        clear chr1;
+        return;
+    end
+        
 
   
 	% use reproducible random numbers. Fix them for the whole calculation,
@@ -164,7 +174,7 @@ function [ theory, header] = compute_theory_barcode( name,sets)
         
         % for a pixel 1, one needs 1:pxSize, pxSize+1:2pxSize,
         % 2pxSize+1:3pxSize
-        if curIdx < length(theory) 
+        if curIdx <= length(theory) 
             leftOverTheory = tempTheory(cutPointsL(curIdx)-j+1+length(leftOverTheory):end);
         end
 

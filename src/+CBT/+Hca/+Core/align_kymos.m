@@ -43,13 +43,14 @@ function [ kymoStructs ] = align_kymos( sets, kymoStructs )
             
             end
         else
-
-            for i=1:length(kymoStructs)
+            edgeDetectionSettings = sets.edgeDetectionSettings;
+            parfor i=1:length(kymoStructs)
+%                 i
                 kymoStructs{i}.alignedKymo = nralign(double(kymoStructs{i}.unalignedKymo));
                 % nralign doesn't compute the left and right edge idx, so we
                 % compute them here
                 import OptMap.MoleculeDetection.EdgeDetection.approx_main_kymo_molecule_edges;
-                [ kymoStructs{i}.leftEdgeIdxs,kymoStructs{i}.rightEdgeIdxs,~] = approx_main_kymo_molecule_edges(kymoStructs{i}.alignedKymo, sets.edgeDetectionSettings);
+                [ kymoStructs{i}.leftEdgeIdxs,kymoStructs{i}.rightEdgeIdxs,~] = approx_main_kymo_molecule_edges(kymoStructs{i}.alignedKymo, edgeDetectionSettings);
             end   
         end
     end

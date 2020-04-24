@@ -56,7 +56,7 @@ for idx = 1:length(sets.theoryNames)
     if sets.savetxts
         % save current theory in txt file
         C = strsplit(header(2:end),' ');
-        matFilename2 = strcat(['theoryTimeSeries_' C{1} '_' num2str(sets.theoryGen.meanBpExt_nm) '_bpnm_barcode.txt']);
+        matFilename2 = strcat(['theory_' C{1} '_' num2str(sets.theoryGen.meanBpExt_nm) '_' num2str(sets.theoryGen.pixelWidth_nm) '_' num2str(sets.theoryGen.psfSigmaWidth_nm) '_barcode.txt']);
         matFilepath = fullfile(sets.resultsDir, matFilename2);
         fd = fopen(matFilepath,'w');
         fprintf(fd, '%5.3f ', theorySeq);

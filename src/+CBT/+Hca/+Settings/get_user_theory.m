@@ -14,7 +14,7 @@ function [ theoryStruct,sets ] = get_user_theory( sets )
           try 
             fid = fopen(sets.theories); 
             fastaNames = textscan(fid,'%s','delimiter','\n'); fclose(fid);
-            for i=1:length(fastaNames)
+            for i=1:length(fastaNames{1})
                 [FILEPATH,NAME,EXT] = fileparts(fastaNames{1}{i});
 
                 sets.theoryFile{i} = strcat(NAME,EXT);
@@ -43,6 +43,8 @@ function [ theoryStruct,sets ] = get_user_theory( sets )
     % now load theory
     import CBT.Hca.UI.Helper.load_theory;
     theoryStruct = load_theory(sets);
+    try delete(hMenuParent); catch; end;
+
     
     if sets.theory.askfornmbp
         % here we add settings
@@ -78,6 +80,6 @@ function [ theoryStruct,sets ] = get_user_theory( sets )
     
     save(name, '-v7.3','theoryStruct');
     
- 
+    
 end
 

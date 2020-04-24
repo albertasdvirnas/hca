@@ -152,6 +152,7 @@ function [ sets ] = get_user_settings( sets )
         
         if sets.output.askforoutputdir
             sets.output.matDirpath = strcat([uigetdir(pwd,'Choose a folder where you want to save the output') '/']);
+            mkdir(sets.output.matDirpath);
         end
     end
     

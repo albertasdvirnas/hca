@@ -13,7 +13,8 @@ function [ theoryStruct ] = convert_nm_ratio( newNmBp, theoryStruct,sets)
         disp('Nm/bp ratio not converted. At least one barcode has nmbp lower than user-input' )
         return
     end
-    
+    precision = sets.theory.precision;
+    matDirpath = sets.output.matDirpath;
     for i=1:length(theoryStruct)
 
         % first change nm to bp ratio
@@ -49,8 +50,13 @@ function [ theoryStruct ] = convert_nm_ratio( newNmBp, theoryStruct,sets)
         % convolved with sequence ->
         seq = ifft(fft(seq).*multF); 
         %fname = strcat(['fold/theory_' barcodeData.hcaSessionStruct.theoryNames{i} '.txt']);
+        [~,mi,en] =fileparts(theoryStruct{i}.filename);
+        
+        mkdir(fullfile(matDirpath,'theories'));
+        theoryStruct{i}.filename = fullfile(fullfile(matDirpath,'theories'),strcat([mi '_converted_to' num2str(newNmBp) en ]));
+
         fileID = fopen(theoryStruct{i}.filename,'w');
-        fprintf(fileID,strcat(['%2.' num2str(sets.theory.precision) 'f ']), seq);
+        fprintf(fileID,strcat(['%2.' num2str(precision) 'f ']), seq);
         fclose(fileID);
         theoryStruct{i}.meanBpExt_nm = newNmBp;
         theoryStruct{i}.length = length(seq);

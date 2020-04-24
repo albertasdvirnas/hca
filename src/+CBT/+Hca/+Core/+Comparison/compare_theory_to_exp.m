@@ -16,12 +16,18 @@ function [comparisonStruct] = compare_theory_to_exp(barcodeGen,theoryStruct, set
     disp('Starting comparing exp to theory...')
     tic
     if sets.genConsensus && ~isempty(consensusStructs)
-        barcodeGen{end+1} = consensusStructs;
+        try
+            for idx=1:length(consensusStructs) % add all possibleconsensuses
+                barcodeGen{end+1} = consensusStructs{idx};
+            end
+        catch
+            barcodeGen{end+1} = consensusStructs;
+        end
     end
             
     comparisonStruct = cell(1,length(theoryStruct));
     % unfiltered comparison
-    parfor barNr = 1:length(theoryStruct)
+    for barNr = 1:length(theoryStruct)
         disp(strcat(['comparing to theory barcode ' num2str(barNr) '_' theoryStruct{barNr}.filename] ));
 
         import CBT.Hca.Core.Comparison.on_compare_theory_to_exp;

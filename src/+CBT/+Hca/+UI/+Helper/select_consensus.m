@@ -48,7 +48,6 @@ function [ consensus,sets] = select_consensus( consensusStructs, sets )
     
     % extract barcode
     consensus.rawBarcode = nanmean(consensusStructs.treeStruct.barcodes{idx});
-    consensus.std = nanstd(consensusStructs.treeStruct.barcodes{idx});
 
 	% barcode indices
     consensus.indices = cell2mat(consensusStructs.treeStruct.clusteredBar{idx});
@@ -56,8 +55,12 @@ function [ consensus,sets] = select_consensus( consensusStructs, sets )
     bitm = isnan(consensusStructs.treeStruct.barcodes{idx});
     % nonzero are only those indices that have been included significant
     % amount of times
+    consensus.indexWeights = sum(~bitm);
     consensus.rawBitmask = sum(~bitm)> 3*std(sum(bitm));
     consensus.rawBarcode(~consensus.rawBitmask) = nan;
+    
+    consensus.stdErrOfTheMean = nanstd(consensusStructs.treeStruct.barcodes{idx})./sqrt(consensus.indexWeights);
+
     %consensus.rawBitmask = consensusStructs.treeStruct.treeBitmasks{consensusIndex}(row,:);
     consensus.time = consensusStructs.time;
     % we have to retrace the name of this barcode
