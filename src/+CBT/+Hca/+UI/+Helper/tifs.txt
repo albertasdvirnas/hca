@@ -1,0 +1,44 @@
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_10_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_11(two)-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_11(two)-Edited_molecule_2_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_13_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_14_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_15_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_16_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_17_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_18-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_19_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_2-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_20_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_21-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_22-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_23_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_24_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_25_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_26_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_27_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_28_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_3-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_30_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_31_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_32-edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_34(not sure)_molecule_2_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_35_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_36_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_37(not sure)_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_39_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_40(bit jittery)_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_41(bit jittery)_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_42_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_43-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_44-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_45_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_46-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_46-Edited_molecule_3_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_47_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_48_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_5-Edited(a bit jittery)_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_6_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_7-Edited_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_8_molecule_1_kymograph.tif
+/home/albyback/workData/rawData/HumanDNAProject/BACs/Kymographs/P18/P18_170607_OD4_100msExp_9-Edited_molecule_1_kymograph.tif

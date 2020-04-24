@@ -1,0 +1,3 @@
+/media/albyback/My Passport/workData/HC/Human DNA Project/BACs/Sequences/H8 (with surrounding sequence).fa
+/media/albyback/My Passport/workData/HC/Human DNA Project/BACs/Sequences/P13.fa
+/media/albyback/My Passport/workData/HC/Human DNA Project/BACs/Sequences/P18 (with additional sequence one side).fa

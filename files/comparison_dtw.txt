@@ -1,0 +1,81 @@
+% Formerly CBT.Hca.Settings.set_fast_sets
+%
+%
+%
+timeFramesNr = 0; % 0 - take all timeframes
+alignMethod = 1; % 1 - nralign, 2 - ssdalign, 3 - ssg
+genConsensus = 1; % generate consensus
+
+saveinfoscores = 0;
+adddefaulttheorysets = 0;
+  
+skipEdgeDetection = 0; % skip edge detection
+edgeSettings = 1;
+skipDoubleTanhAdjustment = 1;
+comparisonMethod = 'dtw'; % method for comparison of exp vs theory, alt 'unmasked_pcc_corr', 'mass_pcc'
+
+displayResults = 0; % display result figure
+plotallmatches = 0; % plot matches to all barcodes as txt files
+
+skipPrechoice = 1;
+prestretchMethod = 0; % 0 - do not prestretch % 1 - prestretch to common length
+theories = 'theories_2020-04-20_13_39_51_.txt'; % theories either as mat or directly txts
+dtwscriptpath = '/Development/hca/tests/features/6_dtw/Tests';
+[filterSettings]
+filter = 0; % filter
+% filter settings. For one timeframe, refer to P.Torche paper for best
+filterMethod = 0; % 0 - filter after stretching, 1 - before
+filterSize = 2.3;
+  
+[kymosets]
+askforkymos = 0; % sould we ask for kymos  
+% sample filename, comment out for the release version
+kymoFile = 'kymos_2020-04-20_13_41_38_.txt'; % if file with kymograph txt's was generated before, this is the name of the folder
+% all the different setting choices
+askforsets = 0; % should we ask for settings
+[random]
+generate = 0; % generate random
+noOfCutouts = 2; % number of random cutouts from the input set
+cutoutSize = 200; % size of region to be cut out (units: pixels)
+
+% bitmask settings
+[bitmasking]
+prestretchPixelWidth_nm = 130; % camera nm/px
+psfSigmaWidth_nm = 300; % psf in nanometers
+deltaCut = 3; % how many delta's should we take
+numPixels = 10;
+%untrustedPx = sets.bitmasking.deltaCut*sets.bitmasking.psfSigmaWidth_nm/sets.bitmasking.prestretchPixelWidth_nm;
+
+[consensus]
+barcodeNormalization = 'bgmean';
+promptForBarcodeClusterLimit = 0;
+threshold = 0.75;
+
+% import OptMap.MoleculeDetection.EdgeDetection.get_default_edge_detection_settings;
+%  sets.edgeDetectionSettings = get_default_edge_detection_settings(sets.skipDoubleTanhAdjustment);
+
+[export]
+savetxt = 1;
+
+[theory]
+askfortheory = 0;
+precision = 5;  %default is 5;
+askfornmbp = 0;
+nmbp = 0.25;
+skipStretch = 1;
+stretchFactors = [0.95 0.96 0.9700    0.9800    0.9900    1.0000    1.0100    1.0200    1.0300 1.04 1.05];
+
+[pvalue];    
+file = ''; 
+promtforparams = 0;
+len2 = 5000000;
+pixelWidth_nm = 130;
+lenMin = 100;
+lenMax = 1000;
+numRnd = 1000;
+psfSigmaWidth_nm = 300;
+    
+[output]
+matDirpath = 'output/'
+askforoutputdir = 0;
+

@@ -1,0 +1,38 @@
+%
+% theory_settings.txt 
+% Loaded automatically when running HCA_theory.m
+%
+% TODO: check which ones are necessary and comment everything
+%
+promptfortheory = 0;         % ask user for theories
+promptforsavetheory = 0;
+savetxts = 1;
+resultsDir = 'theoryData';
+fastas = 'theories_parallel.txt';
+% Theory generation
+skipBarcodeGenSettings = 1;  % whether to skip barcode generatoin settings   
+skipChangeBpNmRatio = 0;
+
+% lambda folder
+[lambda]
+fold =''
+name = 'sequence.fasta';
+
+% parameters
+[theoryGen]
+precision = 5;  %default is 5;
+meanBpExt_nm = 0.3;
+pixelWidth_nm= 130;
+psfSigmaWidth_nm = 300;
+concN=6;
+concY=0.02;
+concDNA = 0.2;
+isLinearTF = 0;
+deltaCut = 3;
+widthSigmasFromMean = 4;
+yoyo1BindingConstant = 26; % yoyo binding constant
+computeFreeConcentrations = 1;
+method = 'literature';      % method    
+k = 2^20;                   % k has to be k=m*2^d. k should be longer than smallest experiment size
+m = 2^14;                   % harcoded parameters for literature, can be changed here by the user
+
