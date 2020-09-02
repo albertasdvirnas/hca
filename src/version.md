@@ -1,5 +1,7 @@
 v (future, see CHANGELOG)
 
+v 4.1 (current)
+- add some additional comparison methods (still in development), add posibility to split barcodes into multiple smaller ones
 v 4.0.2 (17/03/2020, Current)
 
 v 4.0.1 

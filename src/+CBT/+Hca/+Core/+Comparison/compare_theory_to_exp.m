@@ -24,12 +24,22 @@ function [comparisonStruct] = compare_theory_to_exp(barcodeGen,theoryStruct, set
             barcodeGen{end+1} = consensusStructs;
         end
     end
+    
+    stretchFactors = sets.theory.stretchFactors;
+    comparisonMethod = sets.comparisonMethod;
+    w = 200;
             
-    comparisonStruct = cell(1,length(theoryStruct));
-    % unfiltered comparison
-    for barNr = 1:length(theoryStruct)
-        disp(strcat(['comparing to theory barcode ' num2str(barNr) '_' theoryStruct{barNr}.filename] ));
+    rezMax = cell(1,length(theoryStruct));
+    bestBarStretch = cell(1,length(theoryStruct));
+    bestLength = cell(1,length(theoryStruct));
 
+    % unfiltered comparison
+    parfor barNr = 1:length(theoryStruct)
+        disp(strcat(['comparing to theory barcode ' num2str(barNr) '_' theoryStruct{barNr}.filename] ));
+        
+%         import CBT.Hca.Core.Comparison.on_compare;
+%         [rezMax{barNr},bestBarStretch{barNr},bestLength{barNr}] = on_compare(barcodeGen,theoryStruct{barNr},comparisonMethod,stretchFactors,w);
+% 
         import CBT.Hca.Core.Comparison.on_compare_theory_to_exp;
         comparisonStruct{barNr} = on_compare_theory_to_exp(barcodeGen,theoryStruct{barNr}, sets);
     end

@@ -1,0 +1,57 @@
+#
+# Structural variations with HMM C_settings.txt
+# 
+# 
+% implementation
+hmmimplementation = 'C';  % C or MATLAB
+cscript = '/home/albyback/git/sv/src/c/hmm.out';
+bashscript = '/home/albyback/git/sv/src/bash';
+% discretization procedure
+fold = 'dataSim/';              % Folder to save data to
+svType = 'Insertion';           % Type of insertion
+length1 = 500;                  % Length of the main part
+kernelsigma = 2.3;              % psf with in pixels (we convolve with Gaussian)
+length2 = 50;                  % Length of structural variation
+numSamples = 100;               % Number of different structural variations
+pccScore = 0.9;                 % pcc score for series with random variation
+cthr = 0.95;                    % how much of the max PCC to consider the threshold for HMM
+reproducible = 1;               % make random variations reproducible
+method = 'normal';                 % discretization method
+alfabet_size = 60;              % alphabet size for discretized random data
+alfabet_sigma = 2;              % sigman for the alphabet
+k = 2^16;                       % k has to be k=m*2^d. k should be longer than smallest experiment size
+m = 2^14;                       % how much to add on the sides
+psf = 300;                   % psf in nm
+C_M = 2; % 2log10(p_MG)< log10(p_GG)        % p_MJ probability 1/2
+C_G = 0.2;                                    % P_JJ probability 1/3
+G = 1/60;   % 1/64
+c = 1;                                         % length constraint
+cg = 1;                                         % gap constraint
+log10 = 1                                       % whether to take log10 of the profile values
+circ = 1;       % should have only one parameter instead of two
+linear = 0;
+st = 1;                                         % how many elements far away to still consider a true match
+[analysis]
+skipStretch = 0; %1 - do not stretch,  0 - stretch
+stretchFactors = [0.95 0.96 0.9700    0.9800    0.9900    1.0000    1.0100    1.0200    1.0300 1.04 1.05 1.06 1.07 1.08 1.09 1.1];
+%    
+interpolationMethod = 'linear';
+[pval]
+pvaluefold = 'PVAL';                            % folder where to store data for p-value calculation
+pvaluefoldres = 'PVAL/SCAMP';                            % folder where to store data for p-value calculation
+
+numBars = 1000;                                 % how many random barcode to take for p-value calculation
+randomizeq = 1;                                 % whether to randomize q
+[rand]      % for null-model generation
+randmethod = 'imgaussfilt';       % method to generate random barcodes. Alternative 'phaserand'
+nulmodelpath = "/home/albyback/Dropbox/Codes/contig_combinatorial_auction_approach/files/";
+nulmodelname = "meanFFT.mat";
+pvaluefold='pval';
+numRandBarcodes = 1000;
+randomizeq=1;
+generateAtPixelResolution = 1; % 0 - generates at BP resolution
+psf = 300; %(nm)
+pxwnm = 130;
+meanbpnm = 0.24;
+script = 'scamp_script.sh';     % script for generating data for p-values
+thresh = 0.01;

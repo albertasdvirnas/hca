@@ -1,0 +1,14 @@
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150603_p_l_11_26_molecule_9_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150603_p_l_12_27_molecule_10_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150603_p_l_2_4_molecule_1_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150603_p_l_3_8_molecule_2_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150603_p_l_4_10_molecule_3_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150603_p_l_5_11_molecule_4_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150603_p_l_6_13_molecule_5_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150609_p_l_10_20c_molecule_10_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150609_p_l_11_22_molecule_11_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150609_p_l_12_26_molecule_12_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150609_p_l_14_28_molecule_14_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150609_p_l_2_3_molecule_2_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150609_p_l_5_12_molecule_5_kymograph.tif
+/home/albyback/git/sv/data/Plasmid Database/DA15001-pUUH_150603/Raw Kymographs/DA15001-pUUH_150609_p_l_8_18_molecule_8_kymograph.tif

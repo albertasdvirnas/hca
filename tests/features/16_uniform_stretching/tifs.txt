@@ -1,0 +1,2 @@
+/home/albyback/git/Development/hca/tests/features/16_uniform_stretching/test/1_2459_973_0.99917_.tif
+/home/albyback/git/Development/hca/tests/features/16_uniform_stretching/test/1_4975_1025_1.0252_.tif

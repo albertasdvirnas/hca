@@ -81,6 +81,7 @@ function [moleculeStartEdgeIdxsApprox, moleculeEndEdgeIdxsApprox, mainKymoMolecu
         end
     end
     
+    % does not do anything?
     if imcloseHalfGapLen > 0
         imcloseNhood = true(1, 1 + 2*imcloseHalfGapLen);
         % Remove small gaps

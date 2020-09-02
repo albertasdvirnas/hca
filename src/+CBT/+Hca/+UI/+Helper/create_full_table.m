@@ -9,6 +9,7 @@ function [fullTable,barfragq,barfragr] = create_full_table(res_table,bar1,bar2,c
         calc = 0;
     end
     
+    %todo: check that bar1 and bar2 has same dimensions (rows or cols)
     fullTable = [];
     N = length(bar1);
     M = length(bar2);
@@ -18,6 +19,19 @@ function [fullTable,barfragq,barfragr] = create_full_table(res_table,bar1,bar2,c
     % [res_table, ~] = parse_vtrace(vitResults);
     % problem: both bar1 and bar2 can be circularly shifted..
     for i = 1:size(res_table, 1)
+        if res_table(i,1)==0
+            res_table(i,1) = N;
+        end    
+        if res_table(i,2)==0
+            res_table(i,2) = N;
+        end    
+        if res_table(i,3)==0
+            res_table(i,3) = M;
+        end   
+        if res_table(i,4)==0
+            res_table(i,4) = M;
+        end   
+        
         A = res_table(i,1);
         B = res_table(i,2);
         C = res_table(i,3);
@@ -124,19 +138,26 @@ function [fullTable,barfragq,barfragr] = create_full_table(res_table,bar1,bar2,c
                 %
                  barfragq{i} = [ barfragq{i} bar1(tempTable(j,1):tempTable(j,2))];
                  if tempTable(j,5) == 1
-                      barfragr{i} =[ barfragr{i} bar2(tempTable(j,3):tempTable(j,4))'];
+                      barfragr{i} =[ barfragr{i}; bar2(tempTable(j,3):tempTable(j,4))'];
                  else
-                     barfragr{i} =[ barfragr{i} bar2(tempTable(j,3):-1:tempTable(j,4))'];
+                     barfragr{i} =[ barfragr{i}; bar2(tempTable(j,3):-1:tempTable(j,4))'];
                  end
                  lenDiff  = length(barfragr{i}) -length(barfragq{i});
-                 if lenDiff > 0
-                     if tempTable(j,2)+lenDiff > length(bar1)
-                        barfragq{i} = [  barfragq{i} bar1(tempTable(j,2)+1:end)  bar1(1:lenDiff-length(bar1)+tempTable(j,2))];
+                  if abs(lenDiff) > 0
+                     if lenDiff > 0
+                         if tempTable(j,2)+lenDiff > length(bar1)
+                            barfragq{i} = [  barfragq{i} bar1(tempTable(j,2)+1:end)  bar1(1:lenDiff-length(bar1)+tempTable(j,2))];
+                         else
+                             barfragq{i} = [  barfragq{i} bar1(tempTable(j,2)+1:tempTable(j,2)+lenDiff)];
+                         end
                      else
-                         barfragq{i} = [  barfragq{i} bar1(tempTable(j,2)+1:tempTable(j,2)+lenDiff)];
+                        if tempTable(j,4)+abs(lenDiff) > length(bar2)
+                            barfragr{i} = [  barfragr{i} bar2(tempTable(j,4)+1:end)'  bar2(1:abs(lenDiff)-length(bar2)+tempTable(j,4))'];
+                         else
+                             barfragq{i} = [  barfragr{i} bar2(tempTable(j,4)+1:tempTable(j,4)+abs(lenDiff))'];
+                         end 
                      end
-                 end
-                     
+                  end  
             end
         end
 

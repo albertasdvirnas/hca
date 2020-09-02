@@ -1,0 +1,10 @@
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/1_145_513_0.9966.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/1_1893_476_1.0006.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/1_44_530_1.001.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/2_49_486_0.99904.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/2_945_490_1.0132.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/3_3020_504_1.0147.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/3_303_496_0.99662.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/3_4093_502_1.0086.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/3_6292_517_1.0016.tif
+/home/albyback/git/Development/hca/src/+CBT/+Hca/+Core/+Comparison/test/3_7374_499_1.0068.tif

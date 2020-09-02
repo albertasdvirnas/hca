@@ -22,7 +22,11 @@ function [ kymoStructs ] = edit_kymographs_fun(kymoStructs, timeFramesNr )
         disp(strcat(['Kymographs nr ' num2str(find(timeframeTotal < timeFramesNr)) ' were removed because they do not have enough time-frames'])); 
         % save only the preselected number of rows
         for i=1:length(kymoStructs)
-            kymoStructs{i}.unalignedKymo = kymoStructs{i}.unalignedKymo(1:timeFramesNr,:);
+%             try
+                kymoStructs{i}.unalignedKymo = kymoStructs{i}.unalignedKymo(1:timeFramesNr,:);
+%             catch
+%                 kymoStructs{i} = [];
+%             end
         end
     end    
     

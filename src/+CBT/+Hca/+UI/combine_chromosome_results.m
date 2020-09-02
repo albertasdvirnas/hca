@@ -9,7 +9,7 @@ function [ combinedStruct ] = combine_chromosome_results(theoryStruct, compariso
 %     Returns:
 %         combinedStruct: Return structure
 
-    indx = zeros(1,length(comparisonStruct{1}));
+    indx = zeros(1,length(rezMax{1}));
     combinedStruct = cell(1, length(comparisonStruct{1}));
 
     for i=1:length(comparisonStruct{1})

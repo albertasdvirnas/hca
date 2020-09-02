@@ -5,7 +5,7 @@ function [edgeDetectionSettings] = get_default_edge_detection_settings(skipDoubl
     
     otsuApproxSettings.globalThreshTF = true;
     otsuApproxSettings.smoothingWindowLen = 5;
-    otsuApproxSettings.imcloseHalfGapLen = 5;
+    otsuApproxSettings.imcloseHalfGapLen = 10; % default 5
     otsuApproxSettings.numThresholds = 1;
     otsuApproxSettings.minNumThresholdsFgShouldPass = 1;
     edgeDetectionSettings.otsuApproxSettings = otsuApproxSettings;

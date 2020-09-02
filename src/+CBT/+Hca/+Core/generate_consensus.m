@@ -32,10 +32,12 @@ function [ consensusStruct ] = generate_consensus( barcodes, bitmasks, bgMeanApp
         barcodeNormalizationFunction = @(bc, bg) (bc - bg);
        % barcodeNormalizationFunction = @(x) cellfun(bcInnerFunc, x, rawBgs, 'UniformOutput', 0);
     elseif strcmp(sets.consensus.barcodeNormalization, 'bgmean')
-        barcodeNormalizationFunction = @(bc, bg) ((bc - bg) / mean(bc - bg));
+        barcodeNormalizationFunction = @(bc, bg) ((bc - bg) / nanmean(bc - bg));
        % barcodeNormalizationFunction = @(x) cellfun(bcInnerFunc, x, rawBgs, 'UniformOutput', 0);
     elseif strcmp(sets.consensus.barcodeNormalization, 'zscore')
         barcodeNormalizationFunction = @(bc,bg) zscore(bc-bg);
+	elseif strcmp(sets.consensus.barcodeNormalization, 'original')
+        barcodeNormalizationFunction = @(bc,bg) bc;
     end
 
     % define barcode matrix and bitmask. The length is that of the length

@@ -1,0 +1,7 @@
+\documentclass{article}
+
+\usepackage[left=2cm,right=2cm]{geometry}
+
+\begin{document}
+To compute Spearman correlation coefficient, we compute the ranks of data series $A$ and $B$ and then compute the usual Pearson correlation coefficient between the rank series. This creates a difficulty when computing Pearson correlation coefficient using FFTs. There is a choice whether to convert $A$ and $B$ to ranks globally, or to convert them locally for each subset of $B$. The ranks of $A$ are always fixed, but for $B$ it seems more logical to compute the ranks locally.
+\end{document}

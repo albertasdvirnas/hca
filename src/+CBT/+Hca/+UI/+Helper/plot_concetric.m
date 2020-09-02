@@ -75,8 +75,8 @@ function plot_concetric(hAxis,barStruct,sets)
         hGoSurface = pcolor(hAxis, Xs, Ys, Cs);
 %         set(hAxis, 'color', sets.BG_COLOR, 'xtick', [], 'ytick', [], 'box', 'off');
         [~] = colorbar(hAxis, 'Color', sets.COLORBAR_COLOR, 'FontSize', 12);
-        text(radii(3)*sin(6*pi/4),radii(3)*cos(6*pi/4),sets.A,'FontSize', 6);
-        text(radii(5)*sin(6*pi/4),radii(5)*cos(6*pi/4),sets.B,'FontSize', 6);
+        text(radii(3)*sin(6*pi/4),radii(3)*cos(6*pi/4),sets.A,'FontSize', 6,'Interpreter','latex');
+        text(radii(5)*sin(6*pi/4),radii(5)*cos(6*pi/4),sets.B,'FontSize', 6,'Interpreter','latex');
 
 %         set(hAxis.Parent, 'BackgroundColor', sets.BG_COLOR);
 %         legend({'one','two'},'Interpreter','latex')

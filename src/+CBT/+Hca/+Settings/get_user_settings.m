@@ -43,10 +43,10 @@ function [ sets ] = get_user_settings( sets )
     
     % add kymograph settings
 	if sets.kymosets.askforsets
-        prompt = {'Number of time frames (all time frames by default)','Alignment method (1 is nralign, 2 is ssdalign)', 'Filter the barcodes', 'Add consensus','Non-default bitmask settings', 'Non-defaut edge detection settings', 'Skip edge detection', 'Generate random fragments cut-outs'};
+        prompt = {'Number of time frames (all time frames by default)','Alignment method (1 is nralign, 2 is ssdalign)', 'Filter the barcodes', 'Add consensus','Non-default bitmask settings', 'Non-defaut edge detection settings', 'Skip edge detection', 'Generate random fragments cut-outs','Generate independent subfragments for barcodes','Comparison Method'};
         title = 'Kymograph settings';
         dims = [1 35];
-        definput = {'0','1','0','0','0','0','0','0'};
+        definput = {'0','1','0','0','0','0','0','0','0','mass_pcc'};
         answer = inputdlg(prompt,title,dims,definput);
         
         sets.timeFramesNr = str2double(answer{1});
@@ -58,6 +58,8 @@ function [ sets ] = get_user_settings( sets )
         sets.skipEdgeDetection = str2double(answer{7}); % skips edge detection and assumes the first
         % non-zero and last nonzero to be edges of molecule
         sets.random.generate = str2double(answer{8});
+        sets.subfragment.generate = str2double(answer{9});
+        sets.comparisonMethod = answer{10};
     
         if sets.edgeSettings == 0
             sets.skipDoubleTanhAdjustment = 1;
@@ -148,6 +150,16 @@ function [ sets ] = get_user_settings( sets )
 
             sets.random.noOfCutouts = str2double(answer{1}); % number of random cutouts from the input set
             sets.random.cutoutSize = str2double(answer{2});    
+        end
+
+        if  sets.subfragment.generate 
+            prompt = {'Number of subfragments'};
+            title = 'Number of subfragments settings';
+            dims = [1 35];
+            definput = {'2'};
+            answer = inputdlg(prompt,title,dims,definput);
+
+            sets.subfragment.numberFragments = str2double(answer{1}); % number of random cutouts from the input set
         end
         
         if sets.output.askforoutputdir

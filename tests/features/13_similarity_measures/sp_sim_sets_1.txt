@@ -1,0 +1,22 @@
+#
+#   Settings for chromosome alignment analysis
+#
+outfold = '/home/albyback/git/chromosome_alignment/docs/figs/' 
+r= 200;  % length of overlap. Too large and we have false negatives. But might be false negatives for small r too
+kk = 256;
+w = 200;
+timeFrames = 10;
+#stretch = 0.95:0.01:1.05;
+stretch = 1;
+outFold = 'out/';
+fold = '/home/albyback/git/chromosome_alignment/out/';
+outfold = '/home/albyback/git/chromosome_alignment/docs/figs/' ;
+setstxt = 'theory_settings.txt';
+kymosToKeep = 1:200;
+circ = 0;
+kernelsigma = 2.3;
+lengthN = 8000;
+lambda = 500;
+numBars = 50;
+pccScore = 0.7;
+strF = 1;

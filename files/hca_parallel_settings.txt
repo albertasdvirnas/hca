@@ -7,12 +7,12 @@ alignMethod = 1; % 1 - nralign, 2 - ssdalign, 3 - ssg
 genConsensus = 0; % generate consensus
 
 adddefaulttheorysets = 0;
-  
+userDefinedSeqCushion = 50; % user defined cushion for plotting the theory
 skipEdgeDetection = 0; % skip edge detection
 edgeSettings = 1;
 skipDoubleTanhAdjustment = 1;
 comparisonMethod = 'mass_pcc'; % method for comparison of exp vs theory, alt 'unmasked_pcc_corr', 'mass_pcc'
-
+w = 200; % window width in case we use MP
 
 displayResults = 0; % display result figure
 plotallmatches = 0; % plot matches to all barcodes as txt files

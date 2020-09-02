@@ -1,0 +1,2 @@
+/home/albyback/git/Development/hca/tests/features/1_pval/test/1_4455_476_1.0139_.tif
+/home/albyback/git/Development/hca/tests/features/1_pval/test/1_5628_510_0.9979_.tif

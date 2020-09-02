@@ -11,13 +11,21 @@ adddefaulttheorysets = 0;
 skipEdgeDetection = 0; % skip edge detection
 edgeSettings = 1;
 skipDoubleTanhAdjustment = 1;
-comparisonMethod = 'mass_pcc'; % method for comparison of exp vs theory, alt 'unmasked_pcc_corr', 'mass_pcc'
-
+comparisonMethod = 'mass_pcc'; % method for comparison of exp vs theory, alt 'unmasked_pcc_corr', 'mass_pcc', 'mp', and less tested onces, such as 'spearman'..
+w = 200; %
 displayResults = 1;
+saveinfoscores = 1; % if to save infoscores
 
 skipPrechoice = 1;
 prestretchMethod = 0; % 0 - do not prestretch % 1 - prestretch to common length
 theories = 'theories_2020-03-13_15_17_22_.txt'; % theories either as mat or directly txts
+
+[subfragment]
+askForSubfragmentSettings = 1; % whether to ask for subfragment settings (to be implemented)
+generate = 1; % whether to generate subfragments
+numberFragments = 4; % how many subfragments to generate
+%randomPosition = 1; % if position should be random
+%fragmentLength = 200; % otherwise splits the length of barcode into totalLength/numberFragments
 
 [filterSettings]
 filter = 0; % filter

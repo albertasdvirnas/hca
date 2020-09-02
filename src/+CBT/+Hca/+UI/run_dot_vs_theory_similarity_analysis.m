@@ -9,7 +9,7 @@ function [] = run_dot_vs_theory_similarity_analysis(tsHCC)
     hPanelKymoImport = uipanel(hTabKymoImport);
 
     % import enzyme sequence
-        import CBT.Hca.UI.launch_kymo_import_ui;
+    import CBT.Hca.UI.launch_kymo_import_ui;
     lm = launch_kymo_import_ui(hPanelKymoImport, tsHCC);
     
     

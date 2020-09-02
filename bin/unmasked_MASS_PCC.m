@@ -1,4 +1,4 @@
-function [dist] = unmasked_MASS_PCC(longVec, shortVec, shortVecBit,k)
+function [maxcoef, pos, or, secondPos, lenM,dist] = unmasked_MASS_PCC(longVec, shortVec, shortVecBit,k,isLinearTF,numPixelsAroundBestTheoryMask)
     % masked MASS_PCC where short vector can have bitmask
     %
     %   Args:
@@ -7,6 +7,7 @@ function [dist] = unmasked_MASS_PCC(longVec, shortVec, shortVecBit,k)
     %   Returns:
     %
     %       dist
+    
     
     shortVecCut = shortVec(logical(shortVecBit));
 
@@ -17,6 +18,14 @@ function [dist] = unmasked_MASS_PCC(longVec, shortVec, shortVecBit,k)
     dist(1,:) = circshift(dist(1,:),[0,1-find(shortVecBit,1,'first')]);
     dist(2,:) = circshift(dist(2,:),[0,1-find(shortVecBit,1,'first')]);
     
+    import CBT.Hca.UI.Helper.get_best_parameters;
+    [maxcoef, pos, or] = get_best_parameters(dist, 3,length(shortVec),isLinearTF,numPixelsAroundBestTheoryMask);
     
+    %
+    secondPos = find(shortVecBit,1,'first');
+    lenM = length(shortVecCut);
+    
+%     posMax = posMax-secondPos+1;
+
 end
 

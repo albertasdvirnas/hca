@@ -70,10 +70,15 @@ function [] = plot_best_concentric_image(hAxis, barcodeGen, consensusStruct, com
     end
     
 
-    
+%     
+sets.A = 'b';
+sets.B = 'b';
     import CBT.Hca.UI.Helper.plot_concetric;
     plot_concetric(hAxis,barStruct,sets);
+%         plot_concetric(hAxis,barStruct,sets);
+
 %    concentric_plot(barStruct)
+
 
    
 %    

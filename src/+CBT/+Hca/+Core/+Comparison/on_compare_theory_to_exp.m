@@ -17,6 +17,9 @@ function [ comparisonStructure ] = on_compare_theory_to_exp( barcodeGen,theorySt
         case 'unmasked_pcc_corr'
             import SignalRegistration.unmasked_pcc_corr;
             comparisonFun = @(x,y,z,w) unmasked_pcc_corr(x,y,z);
+            import CBT.Hca.UI.Helper.get_best_parameters;
+
+%             parameterfun = @(x)
         case 'mass_pcc'
             % choose k just higher than the length of small sequence for
             % best precision. (larger k though could increase speed)
@@ -28,6 +31,9 @@ function [ comparisonStructure ] = on_compare_theory_to_exp( barcodeGen,theorySt
 
 %             comparisonStructure{idx}.ucr = ucr_dtw_score(theoryStruct.filename, barC, barB, sets);
         case 'mp'
+            import mp.mp_dist_stomp_with_masks;
+            [scoreMatPCC,scorePos,orientation,secondPos, abMatchTemp] = mp_dist_stomp_with_masks(X1,X2, bitX1, bitX2, w, kk,par,islinear)
+
             comparisonFun = @(x,y,z,w) unmasked_MP(y,x,z,2^(4+nextpow2(length(x))));
 
             error('not yet implemented');
@@ -72,7 +78,6 @@ function [ comparisonStructure ] = on_compare_theory_to_exp( barcodeGen,theorySt
 % 	import SignalRegistration.unmasked_pcc_corr;
 
 	%import SignalRegistration.masked_pcc_corr;
-    import CBT.Hca.UI.Helper.get_best_parameters;
     
     % for all the barcodes run
     for idx=1:length(barcodeGen)

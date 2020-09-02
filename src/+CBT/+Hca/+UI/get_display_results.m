@@ -51,11 +51,11 @@ function [] = get_display_results(barcodeGen, consensusStruct,comparisonStruct,t
 
             
 %     subplot(2,2,4), hold on
-    % option: alternatively plot concentirc plot of the two here, based on
-    % user input
+% %     option: alternatively plot concentirc plot of the two here, based on
+%     % user input
 %     import CBT.Hca.UI.Helper.plot_best_image;
 %     plot_best_image(fig1,barcodeGen,consensusStruct,comparisonStruct, theoryStruct, maxcoef);
-%     fig1=figure;
+% %     fig1=figure;
         hAxis = subplot(2,2,4); hold on
 
     import CBT.Hca.UI.Helper.plot_best_concentric_image;

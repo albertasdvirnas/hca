@@ -1,0 +1,95 @@
+#
+# Settings file sets.txt for HCA, which can be loaded in matlab via
+# ini2struct function.
+# 
+timeFramesNr = 0; % 0 - take all timeframes
+alignMethod = 1; % 1 - nralign, 2 - ssdalign, 3 - ssg
+genConsensus = 0; % generate consensus
+skipEdgeDetection = 0; % skip edge detection
+skipDoubleTanhAdjustment = 1;
+displayResults = 1;
+skipBarcodeGenSettings = 0;
+skipChangeBpNmRatio = 0;
+
+[random]
+generate = 0; % generate random
+noOfCutouts = 2; % number of random cutouts from the input set
+cutoutSize = 200; % size of region to be cut out (units: pixels)
+
+[kymosets]
+
+askforkymos = 1; % sould we ask for kymos
+% sample filename, comment out for the release version
+readfirstfolder = 0; % should we read all the tifs from current folder for this
+kymofilefold  = {'/home/albyback/rawData/dnaData/humanData/exp/2330P18/Raw Kymos/'};
+filenames = {[]};
+askforsets = 1; % should we ask for settings
+
+[filterSettings]
+filterMethod = 0; % 0 - filter after stretching, 1 - before
+filterSize = 2.3;
+filter = 0; % filter
+    
+% edge detection  settings
+[edgeDetectionSettings]
+method = 'Otsu'
+
+[bitmasking]
+prestretchPixelWidth_nm = 130; % camera nm/px
+psfSigmaWidth_nm = 300; % psf in nanometers
+deltaCut = 3; % how many delta's should we take
+untrustedPx = 3*300/130;
+
+[consensus]
+barcodeNormalization = 'bgmean';
+promptForBarcodeClusterLimit = 1;
+threshold = 0.75;
+
+[comparison]
+useDTW = 1;
+R = 1.1;     % Sakoe-Chiba band, alternative to stretching in DTW experiments.
+usePCC = 1;
+minLength = 20;
+
+ 
+[theory]
+askfortheory = 1;
+askfornmbp = 1;
+nmbp = 0.225;
+skipStretch = 1; %0 - do not stretch,  1 - stretch
+stretchFactors = [0.95 0.96 0.9700    0.9800    0.9900    1.0000    1.0100    1.0200    1.0300 1.04 1.05];
+%         
+
+[export]
+savetxt = 1;
+
+[pvalue]
+file = ''; 
+promtforparams = 0;
+len2 = 5000000;
+pixelWidth_nm = 130;
+lenMin = 100;
+lenMax = 1000;
+numRnd = 1000;
+psfSigmaWidth_nm = 300;
+    
+[output]
+matDirpath = '';
+askforoutputdir = 1;
+
+[theoryGen]
+meanBpExt_nm = 0.3;
+pixelWidth_nm = 108;
+concN = 6;
+concY = 0.02;
+concDNA = 0.2;
+psfSigmaWidth_nm = 300;
+deltaCut = 3;
+isLinearTF = 0;
+widthSigmasFromMean = 4;
+computeFreeConcentrations = 1;
+model = 'literature';
+
+[lambda]
+fold = 'tests/';
+name = 'sequence.fasta';

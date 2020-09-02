@@ -103,6 +103,7 @@ function [] = plot_best_bar(fig1, barcodeGen, consensusStruct, comparisonStruct,
     hold on
     plot(barfragr{1})
     
+  
 
     xlabel('Position along the sequence cushion (px)','Interpreter','latex')
     ylabel('Z-scored','Interpreter','latex')

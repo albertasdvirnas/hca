@@ -1,0 +1,10 @@
+#
+#
+#
+psfSigmaWidth_nm = 300;
+pixelWidth_nm = 130;
+numRnd = 100;
+islinearQ = 1; % linear query/not true for consensus
+islinearD = 1; % linear data/ humans have linear, but bacteria circular
+lenMax = 200;
+lenMin = 50;

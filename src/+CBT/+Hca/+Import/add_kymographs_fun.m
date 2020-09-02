@@ -24,18 +24,27 @@ function [kymoStructs] = add_kymographs_fun(sets)
         
 
     
+    try 
+        if sets.whichtokeep
+            keep = sets.whichtokeep;
+        end
+    catch
+        keep = 1:length(sets.kymosets.filenames);
+    end
+    
+    
     % predefine structure
-    kymoStructs = cell(1,length(sets.kymosets.filenames));
+    kymoStructs = cell(1,length(keep));
     
     
-    for i=1:length(sets.kymosets.filenames)
-        kymoStructs{i}.name = sets.kymosets.filenames{i};
+    for i=1:length(keep)
+        kymoStructs{i}.name = sets.kymosets.filenames{keep(i)};
         % TODO: preferably extract position in the original movie as well
         % from the name
         % save unaligned kymograph
-        kymoStructs{i}.unalignedKymo = imread(fullfile(sets.kymosets.kymofilefold{i},kymoStructs{i}.name));
+        kymoStructs{i}.unalignedKymo = imread(fullfile(sets.kymosets.kymofilefold{keep(i)},kymoStructs{i}.name));
         
-        fd = fopen(matKymopathShort,'a'); fprintf(fd, '%s \n',fullfile(sets.kymosets.kymofilefold{i},kymoStructs{i}.name)); fclose(fd);
+        fd = fopen(matKymopathShort,'a'); fprintf(fd, '%s \n',fullfile(sets.kymosets.kymofilefold{keep(i)},kymoStructs{i}.name)); fclose(fd);
 
     end
 end

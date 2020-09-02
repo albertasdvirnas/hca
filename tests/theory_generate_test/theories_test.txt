@@ -1,0 +1,3 @@
+/home/albyback/git/hca/tests/sequence.fasta
+/home/albyback/workData/TEST/DNAHUMAN/chr22.fna
+/home/albyback/workData/TEST/BL21sequence.fasta
