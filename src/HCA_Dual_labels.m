@@ -28,9 +28,11 @@ end
 if nargin < 2
   % Ask for barcodes and import them  
   import DL.Hca.import_dense_barcodes
-  barcodeGen = import_dense_barcodes(sets);
+  barcodeGenDense = import_dense_barcodes(sets);
   import DL.Hca.import_sparse_barcodes
-  barcodeGenC = import_sparse_barcodes(barcodeGen, sets);
+  barcodeGenSparse = import_sparse_barcodes(barcodeGenDense, sets);
+  import DL.Hca.merge_barcodegens
+  barcodeGenC = merge_barcodegens(barcodeGenDense, barcodeGenSparse);
   
   
   %% now user theories. They could already be in txt files (if generated

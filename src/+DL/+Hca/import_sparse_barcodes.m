@@ -23,7 +23,8 @@ while true
   uiwait(gcf);
   delete(hMenuParent);
   if not(size(cache('selectedItems'),1) == length(barcodeGen))
-    warning('The number of dot-maps did not match the number of barcodes')
+    f = msgbox('The number of dot-maps did not match the number of barcodes');
+    uiwait(f);
   else
     break
   end
@@ -40,7 +41,7 @@ importStruct = cell(1,length(itemsToImportFilenames));
 for i=1:length(itemsToImportFilenames)
   thisDots = importdata(fullfile(itemsToImportFolders{i}, ...
     itemsToImportFilenames{i}));
-  dotbar = zeros(1, expectedLengths(i));
+  dotbar = zeros(1, length(barcodeGen{i}.rawBarcode));
   dotbar(ceil(thisDots)) = sets.bitmasking.prestretchPixelWidth_nm/sets.bitmasking.prestretchPixelWidth_nm;
   importStruct{i}.name = itemsToImportFilenames{i};
   importStruct{i}.alignedKymo = apply_point_spread_function( ...
