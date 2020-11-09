@@ -13,9 +13,9 @@ for i=1:length(stretchFactor)
   interpBarcode = interp1(randShort, v);
   switch barcodeType
     case 'cb'
-      scoreMat = MASS_PCC(randLong, interpBarcode, nextpow2(2^(4+length(interpBarcode))));
+      scoreMat = MASS_PCC(randLong, interpBarcode, 2^(4+nextpow2(length(interpBarcode))));
     case 'dots'
-      scoreMat = MASS_DOT_CC(randLong, interpBarcode, nextpow2(2^(4+length(interpBarcode))));
+      scoreMat = MASS_DOT_CC(randLong, interpBarcode, 2^(4+nextpow2(length(interpBarcode))));
   end
   slidingScoreVec(i) = nanmax(scoreMat(:));
   slidingScoreMeanVec(i) = nanmean(scoreMat(:));
