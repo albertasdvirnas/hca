@@ -3,14 +3,14 @@ function sparseStruct = import_sparse_barcodes(barcodeGen, sets)
 import Fancy.UI.Templates.create_figure_window;
 import DL.Hca.create_import_tab;
 
-answer = questdlg('Is the second type of barcode an intensity profile or a list of dot positions?', ...
+answer = questdlg('What is the second type of barcode?', ...
   'Choose label type', ...
   'Intensity profile', ...
   'Dots', ...
   'Dots');
 if strcmp(answer, 'Intensity profile')
-  import DL.Hca.import_dense_barcodes
-  sparseStruct = import_dense_barcodes(sets);
+  import DL.Hca.import_single_timeframe_barcodes
+  sparseStruct = import_single_timeframe_barcodes(sets);
   return
 end
 
