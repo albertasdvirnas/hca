@@ -19,6 +19,10 @@ function [dist] = MASS_DOT_CC(x, y, k)
     m = length(y);
     n = length(x);
     dist = zeros(2,n-m+1);
+    
+    % Necessary fix to avoid rounding errors.
+    x(x < 10^-floor(digits/2-1)) = 0;
+    y(y < 10^-floor(digits/2-1)) = 0;
 
     %compute y stats -- O(n)
 %     y = zscore(y,1); % zcore(y) if want to use std with /(m-1)
@@ -32,7 +36,7 @@ function [dist] = MASS_DOT_CC(x, y, k)
     xSum = movsum(x.^2, [m-1 0]);
     
     normConst = sqrt(xSum.*ySum);
-    normConst(xSum == 0 | abs(imag(normConst)) > 0) = nan;
+    normConst(xSum <= 10^-floor(digits/2-1) | abs(imag(normConst)) > 0) = nan;
 
     %k = 4096; %assume k > m
     %k = pow2(nextpow2(sqrt(n)));
