@@ -4,7 +4,8 @@ for i=1:length(barcodeGenDense)
     throw(MException('barcodeGenMerge:empty', ...
       'Barcode pair member is empty, aborting barcode import.'));
   end
-  if not(strcmp(barcodeGenDense{i}.name, barcodeGenSparse{i}.name))
+  if not(strcmp(barcodeGenDense{i}.name(end-4:end), ...
+      barcodeGenSparse{i}.name(end-4:end)))
     warning('Difference found in barcode pair names.')
   end
   if not(length(barcodeGenSparse{i}.rawBarcode) ...
