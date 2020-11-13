@@ -8,12 +8,6 @@ extraL = m/2+round(pxSize)+1; % this +1 comes from convert_bpres_to_pxres, but t
 extraR = m/2+round(2*pxSize);
 ts = [ones(extraL,1); chr1.Data; ones(extraR,1)];
 
-% This is moved to outer structure avoid repetitive (periodic) things in the theory barcode.
-s = rng;
-rng(0,'twister');
-ts(ts > 4) = randi(4,1,sum(ts > 4));
-rng(s);
-
 % length of ts, after adding the enge of sequence effects of length
 % m/2 at the begining and the end of the sequence
 n = length(ts);

@@ -1,5 +1,7 @@
 function [data, means] = run_random_score_gen(sets)
-% run_random_score_gen
+%% run_random_score_gen
+
+rng('shuffle')
 
 % Load settings
 bppx = sets.pvalue.pixelWidth_nm/sets.pvalue.nmbp;
@@ -50,18 +52,45 @@ import CBT.Hca.Import.load_pval_struct;
 [~, data] = load_pval_struct(scoreFilePath);
 [~, means] = load_pval_struct(meansFilePath);
 alreadyInData = length(data);
+if strcmp(sets.pvalue.cbRandomizationMethod, 'phaseRandomization')
+  [meanfftFilename, dirpath] = uigetfile('*.mat', 'Select file with mean fft magnitudes for long barcodes');
+  if isequal(dirpath, 0)
+      return;
+  end
+  meanfftFile = load(fullfile(dirpath, meanfftFilename));
+  meanfftLong = meanfftFile.meanFFT;
+  [meanfftFilename, dirpath] = uigetfile('*.mat', 'Select file with mean fft magnitudes for short barcodes');
+  if isequal(dirpath, 0)
+      return;
+  end
+  meanfftFile = load(fullfile(dirpath, meanfftFilename));
+  meanfftShort = meanfftFile.meanFFT;
+end
+
+%%
 
 % For each psf
 for psfPx=psfPx_all
   psfBp = round(psfPx*bppx);
   % For each long length
   for lenLong=lenLong_all
+    if strcmp(sets.pvalue.variableType, 'lenLong') && alreadyInData > 0
+        alreadyInData = alreadyInData - 1;
+        continue
+    end
     % Generate long barcode
     switch sets.pvalue.barcodeType
       case 'cb'
-        randLong = normrnd(0, 1, 1, lenLong);
-        import CBT.Hca.Core.Pvalue.convolve_bar;
-        randLong = convolve_bar(randLong, psfPx, lenLong);
+        switch sets.pvalue.cbRandomizationMethod
+          case 'randn'
+            randLong = normrnd(0, 1, 1, lenLong);
+            import CBT.Hca.Core.Pvalue.convolve_bar;
+            randLong = convolve_bar(randLong, psfPx, lenLong);
+          case 'phaseRandomization'
+            import CBT.RandBarcodeGen.PhaseRandomization.generate_rand_barcodes_from_fft_zero_model
+            randLong = generate_rand_barcodes_from_fft_zero_model(meanfftLong, 1, lenLong);
+            randLong = randLong{1};
+        end
       case 'dots'
         lenLongBp = round(lenLong*bppx);
         randFastaName = compose("random_fasta_length_%.0f.fasta", lenLongBp);
@@ -104,9 +133,16 @@ for psfPx=psfPx_all
           % Generate short barcode
           switch sets.pvalue.barcodeType
             case 'cb'
-              randShort = normrnd(0, 1, 1, lenShort);
-              import CBT.Hca.Core.Pvalue.convolve_bar;
-              randShort = convolve_bar(randShort, psfPx, lenShort);
+              switch sets.pvalue.cbRandomizationMethod
+                case 'randn'
+                  randShort = normrnd(0, 1, 1, lenShort);
+                  import CBT.Hca.Core.Pvalue.convolve_bar;
+                  randShort = convolve_bar(randShort, psfPx, lenShort);
+                case 'phaseRandomization'
+                  import CBT.RandBarcodeGen.PhaseRandomization.generate_rand_barcodes_from_fft_zero_model
+                  randShort = generate_rand_barcodes_from_fft_zero_model(meanfftShort, 1, lenShort);
+                  randShort = randShort{1};
+              end
             case 'dots'
               lenShortBp = round(lenShort*bppx);
               randSeq = randseq(lenShortBp);
@@ -127,6 +163,7 @@ for psfPx=psfPx_all
             randShort, ...
             stretchMax, ...
             sets.pvalue.barcodeType);
+          % Update progress bar
           timespent = timespent + toc;
           estTimeRem = round(timespent/i*(sets.pvalue.numRnd-i)/6)/10;
           waitbar( ...
