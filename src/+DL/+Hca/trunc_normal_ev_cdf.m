@@ -1,4 +1,4 @@
-function p = trunc_normal_ev_cdf(x, m, n, s, a, b, extraPrecision)
+function p = trunc_normal_ev_cdf(x, m, s, n, a, b, extraPrecision)
 if s < 0; p = nan; return; end
 if nargin < 5
   a = 0;
@@ -28,16 +28,15 @@ if nargin < 7 || ~extraPrecision
   else
     p = ((ncdf(eta) - ncdf(alpha))/(ncdf(beta) - ncdf(alpha))).^n;
   end
-  p = min(max(p, 10^-digits), 1-10^-digits);
 else
   if length(m) > 1 || length(s) > 1
-    tmpa = repmat(vpa_ncdf(alpha), size(x,1), 1);
-    tmpb = repmat(vpa_ncdf(beta), size(x,1), 1);
-    p = mean(((vpa_ncdf(eta) - tmpa)./(tmpb - tmpa)).^n, 2);
+    % This operation is way too slow using vpa :(
+    p = mean(((ncdf(eta) - ncdf(alpha))./(ncdf(beta) - ncdf(alpha))).^n, 2);
     p = reshape(p, xs);
+    p = min(p, 1-1e-13);
   else
     p = ((vpa_ncdf(eta) - vpa_ncdf(alpha))/(vpa_ncdf(beta) - vpa_ncdf(alpha))).^n;
+    p = min(p, vpa(1)-10^-digits);
   end
-  p = min(max(p, 10^-digits), vpa(1)-10^-digits);
 end
 

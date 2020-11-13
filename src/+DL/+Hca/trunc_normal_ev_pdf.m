@@ -1,4 +1,4 @@
-function [p] = trunc_normal_ev_pdf(x, m, n, s, a, b)
+function [p] = trunc_normal_ev_pdf(x, m, s, n, a, b)
 if s < 0; p = nan; return; end
 if nargin < 5
     a = 0;
