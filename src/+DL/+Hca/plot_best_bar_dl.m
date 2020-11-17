@@ -11,28 +11,23 @@ len1=size(barcodeGen, 2);
 
 switch scoreType
   case 'dual'
-    pos = comparisonStruct{ii}.pos(1);
-    or = comparisonStruct{ii}.or(1);
-    indcoef = cellfun(@(x) x.indcoef,comparisonStruct,'UniformOutput',false)';
+    pos = comparisonStruct{ii}.dual.pos(1);
+    or = comparisonStruct{ii}.dual.or(1);
+    stretch = comparisonStruct{ii}.dual.bestBarStretch;
+    indcoef = cellfun(@(x) x.dual.indcoef,comparisonStruct,'UniformOutput',false)';
     indcoef = indcoef{ii}(typeInd,1);
   case 'dense'
-    pos = comparisonStruct{ii}.posDense(1);
-    or = comparisonStruct{ii}.orDense(1);
-    if typeInd == 1
-      indcoef = cellfun(@(x) x.maxcoefDense,comparisonStruct,'UniformOutput',false)';
-      indcoef = indcoef{ii}(1);
-    else
-      indcoef = nan;
-    end
+    pos = comparisonStruct{ii}.dense.pos(1);
+    or = comparisonStruct{ii}.dense.or(1);
+    stretch = comparisonStruct{ii}.dense.bestBarStretch;
+    indcoef = cellfun(@(x) x.dense.indcoef,comparisonStruct,'UniformOutput',false)';
+    indcoef = indcoef{ii}(typeInd,1);
   case 'sparse'
-    pos = comparisonStruct{ii}.posSparse(1);
-    or = comparisonStruct{ii}.orSparse(1);
-    if typeInd == 2
-      indcoef = cellfun(@(x) x.maxcoefSparse,comparisonStruct,'UniformOutput',false)';
-      indcoef = indcoef{ii}(1);
-    else
-      indcoef = nan;
-    end
+    pos = comparisonStruct{ii}.sparse.pos(1);
+    or = comparisonStruct{ii}.sparse.or(1);
+    stretch = comparisonStruct{ii}.sparse.bestBarStretch;
+    indcoef = cellfun(@(x) x.sparse.indcoef,comparisonStruct,'UniformOutput',false)';
+    indcoef = indcoef{ii}(typeInd,1);
 end
 
 switch typeInd
@@ -82,8 +77,8 @@ thrLen = theoryStruct{comparisonStruct{ii}.idx}.length;
 expLen = length(expBar);
 
 % interpolate to the length which gave best CC value
-expBar = interp1(expBar, linspace(1,expLen,expLen*comparisonStruct{ii}.bestBarStretch));
-expBit = expBit(round(linspace(1,expLen,expLen*comparisonStruct{ii}.bestBarStretch)));
+expBar = interp1(expBar, linspace(1,expLen,expLen*stretch));
+expBit = expBit(round(linspace(1,expLen,expLen*stretch)));
 expBar(~expBit)= nan;
 
 
@@ -121,8 +116,13 @@ end
 import CBT.Hca.UI.Helper.create_full_table;
 [temp_table,barfragq, barfragr] = create_full_table(barStruct.matchTable, barStruct.bar1,barStruct.bar2,1);
 
-barfragq{1}(~isnan(barfragq{1})) = zscore(barfragq{1}(~isnan(barfragq{1})));
-barfragr{1}(~isnan(barfragr{1})) = zscore(barfragr{1}(~isnan(barfragr{1})));
+switch typeInd
+  case 1
+    barfragq{1}(~isnan(barfragq{1})) = zscore(barfragq{1}(~isnan(barfragq{1})));
+    barfragr{1}(~isnan(barfragr{1})) = zscore(barfragr{1}(~isnan(barfragr{1})));
+  case 2
+    barfragq{1}(~isnan(barfragq{1})) = barfragq{1}(~isnan(barfragq{1}))/mean(barfragq{1}(~isnan(barfragq{1})))*mean(barfragr{1}(~isnan(barfragr{1})));
+end
 
 %     figure,
 plot(barfragq{1})
@@ -144,64 +144,6 @@ title(strcat(['Experimental barcode vs theory ']),'Interpreter','latex');
 legend({strcat(['$\hat C_{\rm ' name '}^{' btype '}=$' num2str(indcoef,'%0.2f')]), niceName},'Interpreter','latex')
 
 
-
-%
-%
-%     % flip barcode if it gabe best match when flipped
-%     if orientation(ii,1) == 2
-%         expBar = fliplr(expBar);
-%         expBit = fliplr(expBit);
-%     end
-%     % fit positions
-%     fitPositions = pos(ii,1):pos(ii,1)+length(expBar)-1;
-%
-%     if min(fitPositions) <= 0 || max(fitPositions) > thrLen
-%         %<= 0 should not happen
-% %         max =
-% %         plot(repmat(length(theorBar),1,length(-3:3)),-3:3, 'black');
-% %         hold on
-%         % the match at best position loops around circularly. Shift the
-%         theorBar = [theorBar; theorBar(1:end-1) ];
-%         theorBit = [theorBit theorBit(1:end-1) ];
-% %         warning('Experiment vs. theory not printed');
-%     end
-%
-%     % position on the theory barcode
-%     barFit = theorBar(fitPositions);
-%     barBit = theorBit(fitPositions);
-%
-%
-%     % mean and std of theory where bitmask of experiment is nonzero.
-%     % if there were some zero's in the theory, then this would not be
-%     % correct?
-%     m1 = mean(barFit(logical(expBit)));
-%     s1= std(barFit(logical(expBit)));
-%
-%     % mean and std of experiment
-%     m2 = mean(expBar(logical(expBit)));
-%     s2= std(expBar(logical(expBit)));
-%
-%     % check if score is the same
-%     % depends if we have zscore 1 or zscore 0
-% %     zscore(barFit(logical(expBit)),1)'*zscore(expBar(logical(expBit)),1)'/length(expBar(logical(expBit)))
-% %     dd
-%
-%     plot(fitPositions, ((expBar-m2)/s2) *s1+m1)
-%     hold on
-%     plot(fitPositions, barFit)
-%     xlim([min(fitPositions) max(fitPositions)])
-%
-%     xlabel('Position (px)','Interpreter','latex')
-%     ylabel('Rescaled to theoretical intesity','Interpreter','latex')
-%     if ii <= len1
-%         name = num2str(ii);
-%     else
-%         name = 'consensus';
-%     end
-%
-%     title(strcat(['Experimental barcode vs theory ']),'Interpreter','latex');
-%      %
-%     legend({strcat(['$\hat C_{\rm ' name '}=$' num2str(dd,'%0.2f')]), niceName},'Interpreter','latex')
 
 end
 

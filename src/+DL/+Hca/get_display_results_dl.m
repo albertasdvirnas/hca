@@ -16,7 +16,7 @@ else
 end
 
 % choose markers for everything
-markers = ['o';'s';'x';'+';'d';'v';'^';'<';'>'];
+markers = ['o';'s';'x';'v';'+';'d';'^';'<';'>'];
 
 % compute cummulative sum of lengths of barcodes
 lengthBorders = cumsum(cellfun(@(x) x.length,theoryStruct));
@@ -29,9 +29,9 @@ if sets.genConsensus == 1
   numBar = numBar-length(consensusStruct);
 end
 
-maxcoef = cell2mat(cellfun(@(x) x.maxcoef,comparisonStruct,'UniformOutput',false)');
-maxcoefDense = cell2mat(cellfun(@(x) x.maxcoefDense,comparisonStruct,'UniformOutput',false)');
-maxcoefSparse = cell2mat(cellfun(@(x) x.maxcoefSparse,comparisonStruct,'UniformOutput',false)');
+maxcoef = cell2mat(cellfun(@(x) x.dual.maxcoef,comparisonStruct,'UniformOutput',false)');
+maxcoefDense = cell2mat(cellfun(@(x) x.dense.maxcoef,comparisonStruct,'UniformOutput',false)');
+maxcoefSparse = cell2mat(cellfun(@(x) x.sparse.maxcoef,comparisonStruct,'UniformOutput',false)');
 [~, ii] = max(maxcoef(:,1));
 
 % plot max corr coefs
@@ -58,25 +58,11 @@ end
 plot_best_bar_dl(fig1,barcodeGen(2,:),consensusStruct,comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, ii, 'dual', 2);
 
 
-ax = gca;
-set(gca, 'LooseInset', get(gca,'TightInset'))
-outerpos = ax.OuterPosition;
-ti = ax.TightInset; 
-left = outerpos(1) + ti(1);
-bottom = outerpos(2) + ti(2);
-ax_width = outerpos(3) - ti(1) - ti(3);
-ax_height = outerpos(4) - ti(2) - ti(4);
-ax.Position = [left bottom ax_width ax_height];
-
-fig1.PaperPositionMode = 'auto';
-fig_pos = fig1.PaperPosition;
-fig1.PaperSize = [fig_pos(3) fig_pos(4)];
-
 %%
 
 % for i=1:numBar
 %   [maxAll, b] = max([maxcoef(i,1) maxcoefDense(i,1) maxcoefSparse(i,1)]);
-%   if maxAll < 3; continue; end
+% %   if maxAll < 3; continue; end
 %   disp([i maxAll b])
 %   figure;
 %   subplot(2,1,1); hold on
@@ -96,48 +82,4 @@ fig1.PaperSize = [fig_pos(3) fig_pos(4)];
 %   end
 %   hold off
 % end
-
-
-%% additional things/options, added in HCA 4.1
-
-% take a simple example for concentric plot
-%     idx = 87;
-
-
-% todo: make more user friendly..
-%     try
-%         mkdir(sets.output.matDirpath,sets.timestamp);
-%     end
-%
-%     try
-%         saveas(fig1,fullfile(sets.output.matDirpath,sets.timestamp,'result_plot.eps'),'epsc');
-%     end
-%
-%     try
-%         if sets.plotallmatches == 1
-%              mkdir(fullfile(sets.output.matDirpath,sets.timestamp),'Plots');
-%             for i=1:size(maxcoef,1)
-%                 max2 = nan(size(maxcoef));      max2(i,1) = maxcoef(i,1);
-%                 fig1 = figure('Visible', 'off');
-% %                 fig1 = figure;
-%                 if isequal(sets.comparisonMethod,'mp') || isequal(sets.comparisonMethod,'mpAll') || isequal(sets.comparisonMethod,'hmm')
-%                     ax1 = subplot(1,1,1);
-%                     if max2~=0
-%                         plot_best_bar_mp(ax1,barcodeGen,[],comparisonStruct, theoryStruct, max2,0,sets);
-%                     end
-%                 else
-%                     plot_best_bar(fig1,barcodeGen,consensusStruct,comparisonStruct, theoryStruct, max2);
-%                 end
-%                 % mp_based_on_output_pcc_test
-%                 saveas(fig1,fullfile(sets.output.matDirpath,sets.timestamp,'Plots',strcat([num2str(i) '_plot.jpg'])));
-%
-% %                 saveas(fig1,fullfile(sets.output.matDirpath,sets.timestamp,'Plots',strcat([sets.timestamp '_' num2str(i) '_plot.eps'])),'epsc');
-%
-%             end
-%         end
-%     end
-%    assignin('base','hcaSessionStruct',hcaSessionStruct)
-
-%  cache('hcaSessionStruct') = hcaSessionStruct ;
-%     end
 end
