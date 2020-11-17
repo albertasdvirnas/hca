@@ -8,9 +8,6 @@ function sparseStruct = import_sparse_barcodes(barcodeGen, sets)
             if isequal(sets.kymosets.sparseMap, 1)
                 import DL.Hca.import_single_timeframe_barcodes
                 sparseStruct = import_single_timeframe_barcodes(sets);
-                for i=1:length(sparseStruct)
-                    sparseStruct{i}.rawBarcode = sparseStruct{i}.rawBarcode - nanmin(sparseStruct{i}.rawBarcode);
-                end
                 return
             end
         catch
@@ -23,6 +20,7 @@ function sparseStruct = import_sparse_barcodes(barcodeGen, sets)
         import Fancy.UI.Templates.create_figure_window;
         import DL.Hca.create_import_tab;
 
+<<<<<<< src/+DL/+Hca/import_sparse_barcodes.m
         answer = questdlg('What is the second type of barcode?', ...
           'Choose label type', ...
           'Intensity profile', ...
@@ -37,6 +35,18 @@ function sparseStruct = import_sparse_barcodes(barcodeGen, sets)
           return
         end
     end
+=======
+answer = questdlg('What is the second type of barcode?', ...
+  'Choose label type', ...
+  'Intensity profile', ...
+  'Dots', ...
+  'Dots');
+if strcmp(answer, 'Intensity profile')
+  import DL.Hca.import_single_timeframe_barcodes
+  sparseStruct = import_single_timeframe_barcodes(sets);
+  return
+end
+>>>>>>> src/+DL/+Hca/import_sparse_barcodes.m
 
 cache = containers.Map();
 while true

@@ -35,6 +35,10 @@ switch sets.pvalue.variableType
     error('Bad variable type selected for random score generation')
 end
 
+% temp?
+cN = 6;
+cY = 0.02;
+
 % Input/Output
 if not(isfolder(sets.pvalue.scoreFolder))
   mkdir(sets.pvalue.scoreFolder);
@@ -52,22 +56,19 @@ import CBT.Hca.Import.load_pval_struct;
 [~, data] = load_pval_struct(scoreFilePath);
 [~, means] = load_pval_struct(meansFilePath);
 alreadyInData = length(data);
-if strcmp(sets.pvalue.cbRandomizationMethod, 'phaseRandomization')
-  [meanfftFilename, dirpath] = uigetfile('*.mat', 'Select file with mean fft magnitudes for long barcodes');
+if strcmp(sets.pvalue.barcodeType, 'cb') ...
+    && any(strcmp(sets.pvalue.cbRandomizationMethod, ...
+    {'phaseRandomization', 'hybrid'}))
+  [meanfftFilename, dirpath] = uigetfile('*.mat', 'Select file with mean fft magnitudes');
   if isequal(dirpath, 0)
       return;
   end
   meanfftFile = load(fullfile(dirpath, meanfftFilename));
-  meanfftLong = meanfftFile.meanFFT;
-  [meanfftFilename, dirpath] = uigetfile('*.mat', 'Select file with mean fft magnitudes for short barcodes');
-  if isequal(dirpath, 0)
-      return;
-  end
-  meanfftFile = load(fullfile(dirpath, meanfftFilename));
-  meanfftShort = meanfftFile.meanFFT;
+  meanfft = meanfftFile.meanFFT;
 end
 
 %%
+import CBT.Hca.Core.Pvalue.convolve_bar;
 
 % For each psf
 for psfPx=psfPx_all
@@ -79,20 +80,46 @@ for psfPx=psfPx_all
         continue
     end
     % Generate long barcode
+    lenLongBp = round(lenLong*bppx);
     switch sets.pvalue.barcodeType
       case 'cb'
         switch sets.pvalue.cbRandomizationMethod
           case 'randn'
             randLong = normrnd(0, 1, 1, lenLong);
-            import CBT.Hca.Core.Pvalue.convolve_bar;
             randLong = convolve_bar(randLong, psfPx, lenLong);
-          case 'phaseRandomization'
+          case {'phaseRandomization', 'hybrid'}
             import CBT.RandBarcodeGen.PhaseRandomization.generate_rand_barcodes_from_fft_zero_model
-            randLong = generate_rand_barcodes_from_fft_zero_model(meanfftLong, 1, lenLong);
-            randLong = randLong{1};
+            randLong = generate_rand_barcodes_from_fft_zero_model(meanfft, ...
+              ceil(lenLong/length(meanfft)), length(meanfft));
+            randLong = [randLong{:}];
+            t = randi(length(randLong)-lenLong+1);
+            randLong = randLong(t:t+lenLong-1);
+            if strcmp(sets.pvalue.cbRandomizationMethod, 'hybrid')
+              randLongExtra = normrnd(0, 1, 1, lenLong);
+              randLongExtra = convolve_bar(randLongExtra, psfPx, lenLong);
+              randLong = zscore(randLong) + zscore(randLongExtra);
+            end
+          case 'randomNucleotide'
+            randFastaName = compose("random_fasta_length_%.0f.fasta", lenLongBp);
+            randFastaPath = fullfile(sets.pvalue.fastaFolder, randFastaName);
+            if not(isfile(randFastaPath))
+              import DL.Hca.generate_random_fasta
+              generate_random_fasta(randFastaPath, lenLongBp)
+            end
+            import CBT.Hca.Core.Theory.cb_model
+            model = cb_model();
+            import DL.Hca.compute_theory_barcode
+            randLong = compute_theory_barcode( ...
+              randFastaPath, ...
+              bppx, ...
+              psfBp, ...
+              cN,  ...
+              cY, ...
+              model.yoyoBindingConstant, ...
+              model.netropsinBindingConstant, ...
+              2^15, 2^13);
         end
       case 'dots'
-        lenLongBp = round(lenLong*bppx);
         randFastaName = compose("random_fasta_length_%.0f.fasta", lenLongBp);
         randFastaPath = fullfile(sets.pvalue.fastaFolder, randFastaName);
         if not(isfile(randFastaPath))
@@ -131,28 +158,48 @@ for psfPx=psfPx_all
         for i=1:sets.pvalue.numRnd
           tic
           % Generate short barcode
+          lenShortBp = round(lenShort*bppx);
           switch sets.pvalue.barcodeType
             case 'cb'
               switch sets.pvalue.cbRandomizationMethod
                 case 'randn'
                   randShort = normrnd(0, 1, 1, lenShort);
-                  import CBT.Hca.Core.Pvalue.convolve_bar;
                   randShort = convolve_bar(randShort, psfPx, lenShort);
-                case 'phaseRandomization'
+                case {'phaseRandomization', 'hybrid'}
                   import CBT.RandBarcodeGen.PhaseRandomization.generate_rand_barcodes_from_fft_zero_model
-                  randShort = generate_rand_barcodes_from_fft_zero_model(meanfftShort, 1, lenShort);
-                  randShort = randShort{1};
+                  randShort = generate_rand_barcodes_from_fft_zero_model(meanfft, ...
+                    ceil(lenShort/length(meanfft)), length(meanfft));
+                  randShort = [randShort{:}];
+                  t = randi(length(randShort)-lenShort+1);
+                  randShort = randShort(t:t+lenShort-1);
+                  if strcmp(sets.pvalue.cbRandomizationMethod, 'hybrid')
+                    randShortExtra = normrnd(0, 1, 1, lenShort);
+                    randShortExtra = convolve_bar(randShortExtra, psfPx, lenShort);
+                    randShort = zscore(randShort) + zscore(randShortExtra);
+                  end
+                case 'randomNucleotide'
+                  import CBT.Hca.Core.Theory.cb_model
+                  model = cb_model();
+                  import CBT.Hca.Core.Theory.cb_theory;
+                  randShort = cb_theory( ...
+                    randseq(lenShortBp, 'DataType', 'uint8'), ...
+                    cN,  ...
+                    cY, ...
+                    model.yoyoBindingConstant, ...
+                    model.netropsinBindingConstant, ...
+                    0);
+                  randShort = convolve_bar(randShort(:)', psfBp, lenShortBp);
+                  randShort = interp1(randShort, linspace(1, lenShortBp, lenShort));
               end
             case 'dots'
-              lenShortBp = round(lenShort*bppx);
               randSeq = randseq(lenShortBp);
               [~, refDotsBpRes] = restrict( ...
                 randSeq(:)', ...
                 sets.pvalue.pattern(:)', ...
                 round(length(sets.pvalue.pattern)/2));
               randShort = zeros(1, lenShortBp);
-              randShort(refDotsBpRes(2:end)) = bppx;
-              import CBT.Hca.Core.Pvalue.convolve_bar;
+              refDotsBpRes = refDotsBpRes(2:end);
+              randShort(refDotsBpRes) = bppx;
               randShort = convolve_bar(randShort, psfBp, lenShortBp);
               randShort = interp1(randShort, linspace(1, lenShortBp, lenShort));
           end

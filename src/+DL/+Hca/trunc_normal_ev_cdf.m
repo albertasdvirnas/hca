@@ -30,13 +30,14 @@ if nargin < 7 || ~extraPrecision
   end
 else
   if length(m) > 1 || length(s) > 1
-    % This operation is way too slow using vpa :(
-    p = mean(((ncdf(eta) - ncdf(alpha))./(ncdf(beta) - ncdf(alpha))).^n, 2);
+    % This operation is extremely slow using vpa :(
+    tmpA = repmat(vpa_ncdf(alpha), xs(1), 1);
+    tmpB = repmat(vpa_ncdf(beta), xs(1), 1);
+    p = mean(((vpa_ncdf(eta) - tmpA)./(tmpB - tmpA)).^n, 2);
     p = reshape(p, xs);
-    p = min(p, 1-1e-13);
   else
     p = ((vpa_ncdf(eta) - vpa_ncdf(alpha))/(vpa_ncdf(beta) - vpa_ncdf(alpha))).^n;
-    p = min(p, vpa(1)-10^-digits);
   end
+  p = min(p, vpa(1)-10^-digits);
 end
 

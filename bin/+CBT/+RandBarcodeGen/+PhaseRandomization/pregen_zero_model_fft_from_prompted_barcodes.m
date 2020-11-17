@@ -37,8 +37,10 @@ function [] = pregen_zero_model_fft_from_prompted_barcodes()
     end
 
     fprintf('Generating a zero-model fft...\n');
-    import CBT.RandBarcodeGen.PhaseRandomization.gen_mean_fft_freq_mags;
-    meanZeroModelFftFreqMags = gen_mean_fft_freq_mags(zeroModelBarcodes);
+    numBarcodes = length(zeroModelBarcodes);
+    fftMags = cellfun(@(x) abs(fft(x)), zeroModelBarcodes, 'un', 0);
+    fftMagsMat = cell2mat(fftMags);
+    meanZeroModelFftFreqMags = sqrt(sum(fftMagsMat.^2, 1)/numBarcodes);
 
     import CBT.RandBarcodeGen.PhaseRandomization.export_fft_file;
     export_fft_file(meanZeroModelFftFreqMags, meanBpExt_pixels);

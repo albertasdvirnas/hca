@@ -1,5 +1,8 @@
 function [p] = beta_ev_cdf(x, a, b, n, extraPrecision)
 
+undefx = x.^2 <= 0 | x.^2 >= 1 | isnan(x);
+x(undefx) = 0.5;
+
 if length(a) > 1
   xs = size(x);
   x = x(:);
@@ -23,3 +26,4 @@ else
   p = min(max(p, 10^-digits), vpa(1)-10^-digits);
 end
 
+p(undefx) = nan;
