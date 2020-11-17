@@ -11,9 +11,6 @@ answer = questdlg('What is the second type of barcode?', ...
 if strcmp(answer, 'Intensity profile')
   import DL.Hca.import_single_timeframe_barcodes
   sparseStruct = import_single_timeframe_barcodes(sets);
-  for i=1:length(sparseStruct)
-    sparseStruct{i}.rawBarcode = sparseStruct{i}.rawBarcode - nanmin(sparseStruct{i}.rawBarcode);
-  end
   return
 end
 
