@@ -29,6 +29,7 @@ if nargin < 2
   if size(barcodeGenDense, 1) > 1
     barcodeGen = barcodeGenDense;
   else
+    sets.kymosets.kymoFile = sets.kymosets.sparseFile;
     import DL.Hca.import_sparse_barcodes
     barcodeGenSparse = import_sparse_barcodes(barcodeGenDense, sets);
     import DL.Hca.merge_barcodegens
