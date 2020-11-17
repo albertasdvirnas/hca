@@ -36,7 +36,9 @@ filterSize = 2.3;
 [kymosets]
 askforkymos = 1; % sould we ask for kymos  
 % sample filename, comment out for the release version
-kymoFile = 'kymos_2020-03-13_14_26_49_.txt'; % if file with kymograph txt's was generated before, this is the name of the folder
+kymoFile = 'kymos.txt'; % if file with kymograph txt's was generated before, this is the name of the folder
+sparseFile = 'kymossparse.txt'; % txt file with sparse barcodes
+sparseMap = 1; % if sparseMap=1, then the dot barcode is already convolved with PSF
 % all the different setting choices
 askforsets = 1; % should we ask for settings
 [random]
