@@ -1,4 +1,4 @@
-function [] = get_display_results_dl(barcodeGen, consensusStruct,comparisonStruct,theoryStruct, sets)
+function [] = get_display_results_dl(barcodeGen, comparisonStruct,theoryStruct, sets)
 % get_display_results
 % Display results from the comparison of experiments vs theory
 %     Args:
@@ -24,11 +24,6 @@ lengthBorders = cumsum(cellfun(@(x) x.length,theoryStruct));
 % how many barcodes were compared to
 numBar = length(comparisonStruct);
 
-% If consensus was generated, then actual number of barcodes is one less
-if sets.genConsensus == 1
-  numBar = numBar-length(consensusStruct);
-end
-
 maxcoef = cell2mat(cellfun(@(x) x.dual.maxcoef,comparisonStruct,'UniformOutput',false)');
 maxcoefDense = cell2mat(cellfun(@(x) x.dense.maxcoef,comparisonStruct,'UniformOutput',false)');
 maxcoefSparse = cell2mat(cellfun(@(x) x.sparse.maxcoef,comparisonStruct,'UniformOutput',false)');
@@ -47,7 +42,7 @@ plot_best_pos_dl(fig1,comparisonStruct, numBar, sets, markers,lengthBorders);
 subplot(2,2,3); hold on
 %todo: improve this plot with more information
 import DL.Hca.plot_best_bar_dl;
-plot_best_bar_dl(fig1,barcodeGen(1,:),consensusStruct,comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, ii, 'dual', 1);
+plot_best_bar_dl(fig1,barcodeGen(1,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, ii, 'dual', 1);
 
 subplot(2,2,4); hold on
 %todo: improve this plot with more information
@@ -55,7 +50,7 @@ theoryStruct2 = theoryStruct;
 for i=1:length(theoryStruct)
   theoryStruct2{i}.filename = theoryStruct{i}.filename2;
 end
-plot_best_bar_dl(fig1,barcodeGen(2,:),consensusStruct,comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, ii, 'dual', 2);
+plot_best_bar_dl(fig1,barcodeGen(2,:),comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, ii, 'dual', 2);
 
 
 %%
@@ -68,17 +63,17 @@ plot_best_bar_dl(fig1,barcodeGen(2,:),consensusStruct,comparisonStruct, theorySt
 %   subplot(2,1,1); hold on
 %   switch b
 %     case 1
-%       plot_best_bar_dl(fig1,barcodeGen(1,:),consensusStruct,comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, 'dual', 1);
+%       plot_best_bar_dl(fig1,barcodeGen(1,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, 'dual', 1);
 %       subplot(2,1,2);
-%       plot_best_bar_dl(fig1,barcodeGen(2,:),consensusStruct,comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, i, 'dual', 2);
+%       plot_best_bar_dl(fig1,barcodeGen(2,:),comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, i, 'dual', 2);
 %     case 2
-%       plot_best_bar_dl(fig1,barcodeGen(1,:),consensusStruct,comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, 'dense', 1);
+%       plot_best_bar_dl(fig1,barcodeGen(1,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, 'dense', 1);
 %       subplot(2,1,2);
-%       plot_best_bar_dl(fig1,barcodeGen(2,:),consensusStruct,comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, i, 'dense', 2);
+%       plot_best_bar_dl(fig1,barcodeGen(2,:),comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, i, 'dense', 2);
 %     case 3
-%       plot_best_bar_dl(fig1,barcodeGen(1,:),consensusStruct,comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, 'sparse', 1);
+%       plot_best_bar_dl(fig1,barcodeGen(1,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, 'sparse', 1);
 %       subplot(2,1,2);
-%       plot_best_bar_dl(fig1,barcodeGen(2,:),consensusStruct,comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, i, 'sparse', 2);
+%       plot_best_bar_dl(fig1,barcodeGen(2,:),comparisonStruct, theoryStruct2, sets.userDefinedSeqCushion, i, 'sparse', 2);
 %   end
 %   hold off
 % end

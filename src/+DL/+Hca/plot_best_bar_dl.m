@@ -1,4 +1,4 @@
-function [] = plot_best_bar_dl(fig1, barcodeGen, consensusStruct, comparisonStruct,theoryStruct ,userDefinedSeqCushion, ii, scoreType, typeInd)
+function [] = plot_best_bar_dl(fig1, barcodeGen, comparisonStruct,theoryStruct ,userDefinedSeqCushion, ii, scoreType, typeInd)
 % plot_best_bar
 
 % plots best barcode vs theory in case barcode is always larger than
