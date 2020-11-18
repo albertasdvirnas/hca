@@ -10,7 +10,7 @@ savetxts = 1;
 resultsDir = 'theoryData';
 fastas = 'fastas_2020-03-13_13_46_06_.txt';
 % Theory generation
-skipBarcodeGenSettings = 1;  % whether to skip barcode generatoin settings   
+skipBarcodeGenSettings = 0;  % whether to skip barcode generatoin settings   
 skipChangeBpNmRatio = 0;
 
 % lambda folder
@@ -20,6 +20,7 @@ name = 'sequence.fasta';
 
 % parameters
 [theoryGen]
+precision=5;
 meanBpExt_nm = 0.3;
 pixelWidth_nm= 130;
 psfSigmaWidth_nm = 300;
@@ -31,7 +32,8 @@ deltaCut = 3;
 widthSigmasFromMean = 4;
 yoyo1BindingConstant = 26; % yoyo binding constant
 computeFreeConcentrations = 1;
+computeBitmask = 1; % whether to compute bitmask
 method = 'literature';      % method    
-k = 2^20;                   % k has to be k=m*2^d. k should be longer than smallest experiment size
-m = 2^14;                   % harcoded parameters for literature, can be changed here by the user
+k = 2^15;                   % k has to be k=m*2^d. k should be longer than smallest experiment size
+m = 2^13;                   % harcoded parameters for literature, can be changed here by the user
 

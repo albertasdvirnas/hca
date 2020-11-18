@@ -44,7 +44,7 @@ function [ theoryStruct,sets ] = get_user_theory( sets )
     
    [ fd,fr,fl ] = fileparts(sets.theoryFile{1});
     if ~isequal(fl,'.mat')&&~isequal(fl,'.txt')
-            outdirpath = sets.output.matDirpath;
+        outdirpath = sets.output.matDirpath;
 
         % want this to use all the theory files and fols
         [t,matFilepathShort,theoryStruct, sets,theoryGen] = HCA_theory_parallel('',0.3,'theory_settings_parallel.txt',sets.theoryFile,sets.theoryFileFold);

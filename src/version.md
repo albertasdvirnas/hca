@@ -1,5 +1,8 @@
 v (future, see CHANGELOG)
 
+v 4.3 
+- add bitmask generation for theory
+- and it is also used when computing mass pcc
 v 4.2 
 - mp comparison method is now functional,
 - can add consensus

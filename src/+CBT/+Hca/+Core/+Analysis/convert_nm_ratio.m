@@ -26,6 +26,20 @@ function [ theoryStruct ] = convert_nm_ratio( newNmBp, theoryStruct,sets)
         % first convert to the correct length
         pxSize = theoryStruct{i}.meanBpExt_nm/newNmBp;
     
+        % convert nm ratio bitmask
+        try % only if bitmask exists. first try to load
+            bitname = strrep(theoryStruct{i}.filename,'barcode.txt','bitmask.txt');
+            fileID = fopen(bitname,'r');
+            bitmask = fscanf(fileID,' %f');
+            fclose(fileID);
+            bitmask = convert_bpRes_to_pxRes(bitmask, 1/pxSize);
+            [~,mi,en] =fileparts(bitname);
+            bitname = fullfile(fullfile(matDirpath,'theories'),strcat([mi '_converted_to' num2str(newNmBp) en ]));
+            fileID = fopen(bitname,'w');
+            fprintf(fileID,' %5.5f', bitmask);
+            fclose(fileID);
+        end
+        
         % this should be correct since the convolution of two Gaussians is
         % a Gaussian, a test of this is in the script nmbpconvertion.m
         import CBT.Core.convert_bpRes_to_pxRes;
@@ -60,6 +74,8 @@ function [ theoryStruct ] = convert_nm_ratio( newNmBp, theoryStruct,sets)
         fclose(fileID);
         theoryStruct{i}.meanBpExt_nm = newNmBp;
         theoryStruct{i}.length = length(seq);
+        
+
     end
 end
 

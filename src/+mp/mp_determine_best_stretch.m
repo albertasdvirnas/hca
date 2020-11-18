@@ -2,7 +2,7 @@ function [bestStretch,maxCoef,r] = mp_determine_best_stretch(query_txt,data_txt,
     %
     if nargin < 3
         sets.stretch =  0.7:0.01:1.3;
-        sets.r = 100;
+        sets.r = 100; % default 100
         sets.k = 2^14;
         sets.circ = 1;
         sets.analysis.interpolationMethod = 'linear';
@@ -49,11 +49,17 @@ function [bestStretch,maxCoef,r] = mp_determine_best_stretch(query_txt,data_txt,
         bit1res(isnan(bit1res))=0;
 
         if length(y) >= r
-            [mp, mpI,mpD] = comparisonFun(y',data_txt',bit1res',r,~sets.circ);
+            if sets.circ
+                % if there's zero's in the mask this can't be circ.
+                [mp, mpI,mpD] = comparisonFun([y y(1:r-1)]',data_txt',[bit1res bit1res(1:r-1)]',r,~sets.circ);
+            else
+                [mp, mpI,mpD] = comparisonFun(y',data_txt',bit1res',r,~sets.circ);
+            end
     %         [mpExample,mpIExample] = mp_profile_stomp_dna(y', bTS',r,kk);
         else
             mp = [];
             mpI = [];
+            mpD = [];
         end
 
         [ comparisonStruct{j}.maxcoef,comparisonStruct{j}.pos,comparisonStruct{j}.or ] =...

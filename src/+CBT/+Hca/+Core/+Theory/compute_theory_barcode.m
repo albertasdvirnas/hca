@@ -1,4 +1,4 @@
-function [ theory, header] = compute_theory_barcode( name,sets)
+function [ theory, header, bitmask] = compute_theory_barcode( name,sets)
     % compute_hca_theory_barcode Computes theory barcode for hca
     %
     %   Args:
@@ -24,12 +24,17 @@ function [ theory, header] = compute_theory_barcode( name,sets)
     if length(chr1.Data) < sets.theoryGen.k
         disp(strcat(['Theory ' name ' skipped because length < theoryGen.k =' num2str(sets.theoryGen.k) ]));
         theory = [];
+        bitmask = [];
 %         header = [];
         delete(chr1.Filename);
         clear chr1;
         return;
     end
         
+    if  sets.theoryGen.computeBitmask
+        import CBT.Hca.Core.Theory.compute_theory_bitmask;
+        bitmask = compute_theory_bitmask(chr1,sets);
+    end
 
   
 	% use reproducible random numbers. Fix them for the whole calculation,

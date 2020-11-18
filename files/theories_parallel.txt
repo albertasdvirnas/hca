@@ -1,2 +1,0 @@
-/home/albyback/workData/TEST/BL21sequence.fasta
-/media/albyback/My Passport/workData/HC/Human DNA Project/BACs/Sequences/H8 (with surrounding sequence).fa

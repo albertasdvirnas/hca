@@ -33,7 +33,7 @@ function [ rezMaxM,bestBarStretch,bestLength ] = on_compare(barcodeGen,theoryStr
         case 'mass_pcc'
             % choose k just higher than the length of small sequence for
             % best precision. (larger k though could increase speed)
-            comparisonFun = @(x,y,z,w,u) unmasked_MASS_PCC(y,x,z,2^(4+nextpow2(length(x))),theoryStruct.isLinearTF,numPixelsAroundBestTheoryMask);
+            comparisonFun = @(x,y,z,w,u) unmasked_MASS_PCC(y,x,z,w,2^(4+nextpow2(length(x))),theoryStruct.isLinearTF,numPixelsAroundBestTheoryMask);
         case 'dtw'
             
             import SignalRegistration.ucr_dtw_score;

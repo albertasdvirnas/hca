@@ -91,13 +91,27 @@ parfor idx = 1:length(sets.theoryNames)
 
     % new way to generate theory, check theory_test.m to check how it works
     import CBT.Hca.Core.Theory.compute_theory_barcode;
-    [theorySeq, header] = compute_theory_barcode(fullfile(theories{idx},theorynames{idx}),sets);
+    [theorySeq, header,bitmask] = compute_theory_barcode(fullfile(theories{idx},theorynames{idx}),sets);
 
 	theoryBarcodes{idx} = theorySeq;
+    theoryBitmasks{idx} = bitmask;
+
     theoryNames{idx} = header;
     theoryIdx{idx} = idx;
     bpNm{idx} = bpNmV;
     
+    
+        
+    if sets.savetxts && ~isempty(bitmask)
+        % save current theory in txt file
+        C = strsplit(header(2:end),' ');
+        tempNames{idx} = strcat(['theory_' C{1} '_' num2str(length(bitmask)) '_' num2str(meanBpExt_nm) '_' num2str(pixelWidth_nm) '_' num2str(psfSigmaWidth_nm) '_' num2str(linear) '_bitmask.txt']);
+%         matFilename2 = strcat(['theoryTimeSeries_' C{1} '_' num2str(meanBpExt_nm) '_bpnm_barcode.txt']);
+        matFilepath = fullfile(resultsDir, timestamp, tempNames{idx});
+        fd = fopen(matFilepath,'w');
+        fprintf(fd, strcat([' %5.5f']), bitmask);
+        fclose(fd);
+    end
     
     if sets.savetxts && ~isempty(theorySeq)
         % save current theory in txt file
@@ -122,6 +136,8 @@ end
 
 % save sets
 theoryGen.theoryBarcodes = theoryBarcodes;
+theoryGen.theoryBitmasks = theoryBitmasks;
+
 theoryGen.theoryNames = theoryNames;
 theoryGen.theoryIdx = theoryIdx;
 theoryGen.bpNm = bpNm;

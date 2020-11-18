@@ -1,4 +1,4 @@
-function [ maxcoef,pos,or ] = get_best_parameters( xcorrs, numBestPar, lenQ, isLinearTF, mask)
+function [ maxcoef,pos,or ] = get_best_parameters( xcorrs, numBestPar, lenQ, isLinearTF, mask,theoryBit)
     % get_best_parameters
     
     % input xcorrs - cross correlation coefficients
@@ -25,6 +25,17 @@ function [ maxcoef,pos,or ] = get_best_parameters( xcorrs, numBestPar, lenQ, isL
     if isLinearTF==1
         xcorrs(:,end-lenQ+2:1:end) = nan;
     end
+    
+    if nargin >=6
+        % we can compute theoryBit for all positions along xcorrs
+        nanValues = movmean(theoryBit,lenQ,'Endpoints','discard');
+        xcorrs(:,nanValues > 50) = nan;        % 50 is estimate.., mean approx 50 bp  (1/10th) in a pixel were nan's
+    end
+    
+    % now, based on lomgVecBit, bitmask some positions, maybe 
+    %     longVecBit = [longVecBit  longVecBit(1:min(end-1,sum(shortVecBit)-1))];
+    % shortVecCut
+
     % todo: based on options, don't record just the three best ones, but
     % introduce a "mask" for the best result, so that the same place is not reported
     % twice !
