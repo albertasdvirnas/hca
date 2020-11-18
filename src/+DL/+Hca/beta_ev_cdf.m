@@ -18,12 +18,12 @@ if nargin < 5 || ~extraPrecision
   end
 else
   if length(a) > 1
-    p = mean(cell2mat(arrayfun(@(a1) (0.5*(vpa(1) + sign(x).*vpa(betainc(x.^2, 0.5*b, a1/2-1, 'lower')))).^n, a, 'un', 0)), 2);
+    p = mean(cell2mat(arrayfun(@(a1) (0.5*(vpa(2) - sign(x).*vpa(betainc(x.^2, 0.5*b, a1/2-1, 'upper')))).^n, a, 'un', 0)), 2);
     p = reshape(p, xs);
   else
-    p = (0.5*(vpa(1) + sign(x).*vpa(betainc(x.^2, 0.5*b, a/2-1, 'lower')))).^n;
+    p = (0.5*(vpa(2) - sign(x).*vpa(betainc(x.^2, 0.5*b, a/2-1, 'upper')))).^n;
   end
-  p = min(max(p, 10^-digits), vpa(1)-10^-digits);
+  p = min(p, vpa(1)-10^-digits);
 end
 
 p(undefx) = nan;
