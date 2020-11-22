@@ -4,3 +4,6 @@ tests/
 resultData/
 testdtw/
 docs/
+files/
+*.mm
+*.asv
