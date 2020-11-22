@@ -1,45 +1,34 @@
 function sparseStruct = import_sparse_barcodes(barcodeGen, sets)
-    % import sparse barcodes
-    
-    % If 
-    if ~sets.kymosets.askforkymos 
-        try
-            sets.kymosets.kymoFile = sets.kymosets.sparseFile;
-            if isequal(sets.kymosets.sparseMap, 1)
-                import DL.Hca.import_single_timeframe_barcodes
-                sparseStruct = import_single_timeframe_barcodes(sets);
-                return
-            end
-        catch
-            sets.kymosets.askforkymos = 1;
-        end
-    end
-    
-    if sets.kymosets.askforkymos
-        % loads figure window
-        import Fancy.UI.Templates.create_figure_window;
-        import DL.Hca.create_import_tab;
+% import sparse barcodes
 
-        answer = questdlg('What is the second type of barcode?', ...
-          'Choose label type', ...
-          'Intensity profile', ...
-          'Dots', ...
-          'Dots');
-        if strcmp(answer, 'Intensity profile')
-          import DL.Hca.import_single_timeframe_barcodes
-          sparseStruct = import_single_timeframe_barcodes(sets);
-          return
-        end
+% If
+if ~sets.kymosets.askforkymos
+  try
+    sets.kymosets.kymoFile = sets.kymosets.sparseFile;
+    if isequal(sets.kymosets.sparseMap, 1)
+      import DL.Hca.import_single_timeframe_barcodes
+      sparseStruct = import_single_timeframe_barcodes(sets);
+      return
     end
-answer = questdlg('What is the second type of barcode?', ...
-  'Choose label type', ...
-  'Intensity profile', ...
-  'Dots', ...
-  'Dots');
-if strcmp(answer, 'Intensity profile')
-  import DL.Hca.import_single_timeframe_barcodes
-  sparseStruct = import_single_timeframe_barcodes(sets);
-  return
+  catch
+    sets.kymosets.askforkymos = 1;
+  end
+end
+
+if sets.kymosets.askforkymos
+  % loads figure window
+  import Fancy.UI.Templates.create_figure_window;
+  import DL.Hca.create_import_tab;
+  answer = questdlg('What is the second type of barcode?', ...
+    'Choose label type', ...
+    'Intensity profile', ...
+    'Dots', ...
+    'Dots');
+  if strcmp(answer, 'Intensity profile')
+    import DL.Hca.import_single_timeframe_barcodes
+    sparseStruct = import_single_timeframe_barcodes(sets);
+    return
+  end
 end
 
 cache = containers.Map();
