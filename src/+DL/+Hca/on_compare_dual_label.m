@@ -5,6 +5,9 @@ function rezMaxM = on_compare_dual_label( ...
   numPixelsAroundBestTheoryMask, ...
   sets)
 
+%
+digits(64)
+
 % load theory barcode txt file.
 formatSpec = '%f';
 fileID = fopen(theoryStruct.filename,'r');
@@ -13,6 +16,13 @@ fclose(fileID);
 fileID = fopen(theoryStruct.filename2,'r');
 theorBar2 = transpose(fscanf(fileID,formatSpec));
 fclose(fileID);
+try
+  fileID = fopen(strrep(theoryStruct.filename, 'barcode', 'bitmask'),'r');
+  theorBit = transpose(fscanf(fileID,formatSpec));
+  fclose(fileID);
+catch
+  theorBit = ones(size(theorBar1));
+end
 
 % Load zero-model params
 theoryNumPixels = 3088286401/sets.pvalue.pixelWidth_nm*sets.pvalue.nmbp;
@@ -107,21 +117,22 @@ for idx=1:size(barcodeGen, 2)
       dotParamLambda*dotParamExa*numStretchFactors*(theoryNumPixels-lenBarTested), ...
       0, 1, true));
     
-%     disp(num2str([idx max(xDense(:)) max(zDense(:)) max(xSparse(:)) max(zSparse(:)) lenBarTested]))
-
     import CBT.Hca.UI.Helper.get_best_parameters;
     [rezMaxDual{j}.maxcoef, ...
       rezMaxDual{j}.pos, ...
       rezMaxDual{j}.or] = get_best_parameters((zDense + zSparse)/sqrt(2), ...
-      3, length(barDense), 1, numPixelsAroundBestTheoryMask);
+      3, length(barDense), 1, numPixelsAroundBestTheoryMask, ...
+      theorBit);
     [rezMaxDense{j}.maxcoef, ...
       rezMaxDense{j}.pos, ...
       rezMaxDense{j}.or] = get_best_parameters(zDense, ...
-      3, length(barDense), 1, numPixelsAroundBestTheoryMask);
+      3, length(barDense), 1, numPixelsAroundBestTheoryMask, ...
+      theorBit);
     [rezMaxSparse{j}.maxcoef, ...
       rezMaxSparse{j}.pos, ...
       rezMaxSparse{j}.or] = get_best_parameters(zSparse, ...
-      3, length(barSparse), 1, numPixelsAroundBestTheoryMask);
+      3, length(barSparse), 1, numPixelsAroundBestTheoryMask, ...
+      theorBit);
     
     rezMaxDual{j}.indcoef = [ ...
       arrayfun(@(i) zDense(rezMaxDual{j}.or(i), rezMaxDual{j}.pos(i)), 1:3); ...
@@ -151,5 +162,5 @@ for idx=1:size(barcodeGen, 2)
   rezMaxM{idx}.sparse.bestBarStretch = stretchFactors(d);
   rezMaxM{idx}.sparse.bestLength = round(lenBarTested*stretchFactors(d));
   
-  disp(num2str([idx rezMaxM{idx}.dual.maxcoef(1) rezMaxM{idx}.dense.maxcoef(1) rezMaxM{idx}.sparse.maxcoef(1)]))
+%   disp(num2str([idx rezMaxM{idx}.dual.maxcoef(1) rezMaxM{idx}.dense.maxcoef(1) rezMaxM{idx}.sparse.maxcoef(1)]))
 end
