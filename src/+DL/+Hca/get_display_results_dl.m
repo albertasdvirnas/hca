@@ -40,7 +40,11 @@ if not(isequal(dirpath, 0))
   bionanoPositionsBp = min(molDataTable.RefStartPos(tableIds), ...
     molDataTable.RefStartPos(tableIds));
   bionanoPositions = bionanoPositionsBp/sets.pvalue.pixelWidth_nm*sets.pvalue.nmbp;
-  bionanoIdx = 5; % TEMP, what do if theoryStruct is not sorted??!
+  list = cellfun(@(x) x.name, theoryStruct, 'un', 0);
+  bionanoIdx = listdlg('PromptString', ...
+    {'Select which theory the molecule' 'positions are referring to:'}, ...
+    'ListString', list, 'SelectionMode', 'Single');
+  if isempty(bionanoIdx); return; end
 
   % plot max corr coefs
   subplot(2,2,1);hold on;
