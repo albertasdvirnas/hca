@@ -33,23 +33,24 @@ dotsParamsPath = fullfile(sets.pvalue.paramFolder, ...
   compose("dots_%s_zero_model_params.txt", sets.pvalue.pattern));
 [cbPsfInd, cbParams] = load_pval_struct(cbParamsPath);
 [dotsPsfInd, dotParams] = load_pval_struct(dotsParamsPath);
+psfPxRounded = round(sets.pvalue.psfSigmaWidth_nm/sets.pvalue.pixelWidth_nm, 4);
 try
-  cbParamLambda = cbParams{ismember(sets.pvalue.psfSigmaWidth_nm, cbPsfInd)}(1);
-  cbParamExa = cbParams{ismember(sets.pvalue.psfSigmaWidth_nm, cbPsfInd)}(2);
-  cbParamNu = cbParams{ismember(sets.pvalue.psfSigmaWidth_nm, cbPsfInd)}(3);
+  cbParamLambda = cbParams{ismember(psfPxRounded, cbPsfInd)}(1);
+  cbParamExa = cbParams{ismember(psfPxRounded, cbPsfInd)}(2);
+  cbParamNu = cbParams{ismember(psfPxRounded, cbPsfInd)}(3);
 catch
   error(compose("Zero-model params for psf: %.2f not found in file: %s", ...
-    sets.pvalue.psfSigmaWidth_nm, cbParamsPath));
+    psfPxRounded, cbParamsPath));
 end
 try
-  dotParamLambda = dotParams{ismember(sets.pvalue.psfSigmaWidth_nm, dotsPsfInd)}(1);
-  dotParamExa = dotParams{ismember(sets.pvalue.psfSigmaWidth_nm, dotsPsfInd)}(2);
-  dotParamMu = dotParams{ismember(sets.pvalue.psfSigmaWidth_nm, dotsPsfInd)}(3);
-  dotParamXi = dotParams{ismember(sets.pvalue.psfSigmaWidth_nm, dotsPsfInd)}(4);
-  dotParamSigma = dotParams{ismember(sets.pvalue.psfSigmaWidth_nm, dotsPsfInd)}(5);
+  dotParamLambda = dotParams{ismember(psfPxRounded, dotsPsfInd)}(1);
+  dotParamExa = dotParams{ismember(psfPxRounded, dotsPsfInd)}(2);
+  dotParamMu = dotParams{ismember(psfPxRounded, dotsPsfInd)}(3);
+  dotParamXi = dotParams{ismember(psfPxRounded, dotsPsfInd)}(4);
+  dotParamSigma = dotParams{ismember(psfPxRounded, dotsPsfInd)}(5);
 catch
   error(compose("Zero-model params for psf: %.2f not found in file: %s", ...
-    sets.pvalue.psfSigmaWidth_nm, dotsParamsPath));
+    psfPxRounded, dotsParamsPath));
 end
 
 rezMaxM = cell(1, size(barcodeGen, 2));

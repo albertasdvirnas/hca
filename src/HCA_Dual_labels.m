@@ -18,7 +18,7 @@ function [hcaStruct] = HCA_Dual_labels(sets, hcaStruct)
 if nargin < 1 % if settings were not provided
   %% import settings
   import CBT.Hca.Import.import_hca_settings;
-  sets = import_hca_settings('hca_settings.txt');
+  sets = import_hca_settings('hca_settings_dual_label.txt');
   assignin('base','sets', sets)
 end
 
@@ -46,6 +46,12 @@ if nargin < 2
   import DL.Hca.get_user_theory_dl;
   theoryStruct = get_user_theory_dl(sets);
   assignin('base','theoryStruct', theoryStruct)
+  
+%   import CBT.Hca.Settings.get_user_theory;
+%   theoryStruct = get_user_theory(sets);
+%   tmptheoryStruct = get_user_theory(sets);
+%   theoryStruct.filename2 = tmptheoryStruct.filename;
+%   assignin('base','theoryStruct', theoryStruct)
   
   %% compare theory to experiment
   import CBT.Hca.Core.Comparison.compare_distance;

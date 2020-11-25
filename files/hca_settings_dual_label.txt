@@ -1,0 +1,116 @@
+% Formerly CBT.Hca.Settings.set_fast_sets
+%
+%
+%
+timeFramesNr = 0; % 0 - take all timeframes
+alignMethod = 1; % 1 - nralign, 2 - ssdalign, 3 - ssg
+genConsensus = 0; % generate consensus
+
+adddefaulttheorysets = 0;
+  
+skipEdgeDetection = 0; % skip edge detection
+edgeSettings = 1;
+skipDoubleTanhAdjustment = 1;
+comparisonMethod = 'dual_label'; % method for comparison of exp vs theory, alt 'unmasked_pcc_corr', 'mass_pcc', 'mp', and less tested onces, such as 'spearman'..
+w = 200; %
+displayResults = 1;
+saveinfoscores = 1; % if to save infoscores
+
+skipPrechoice = 1;
+prestretchMethod = 0; % 0 - do not prestretch % 1 - prestretch to common length
+theories = 'theories_2020-03-13_15_17_22_.txt'; % theories either as mat or directly txts
+
+userDefinedSeqCushion = 50;
+
+[subfragment]
+askForSubfragmentSettings = 1; % whether to ask for subfragment settings (to be implemented)
+generate = 1; % whether to generate subfragments
+numberFragments = 4; % how many subfragments to generate
+%randomPosition = 1; % if position should be random
+%fragmentLength = 200; % otherwise splits the length of barcode into totalLength/numberFragments
+
+[filterSettings]
+filter = 0; % filter
+% filter settings. For one timeframe, refer to P.Torche paper for best
+filterMethod = 0; % 0 - filter after stretching, 1 - before
+filterSize = 1.4;
+  
+[kymosets]
+askforkymos = 1; % sould we ask for kymos  
+% sample filename, comment out for the release version
+kymoFile = 'kymos.txt'; % if file with kymograph txt's was generated before, this is the name of the folder
+sparseFile = 'kymossparse.txt'; % txt file with sparse barcodes
+sparseMap = 1; % if sparseMap=1, then the dot barcode is already convolved with PSF
+% all the different setting choices
+askforsets = 1; % should we ask for settings
+[random]
+generate = 0; % generate random
+noOfCutouts = 2; % number of random cutouts from the input set
+cutoutSize = 200; % size of region to be cut out (units: pixels)
+
+% bitmask settings
+[bitmasking]
+prestretchPixelWidth_nm = 130; % camera nm/px
+psfSigmaWidth_nm = 300; % psf in nanometers
+deltaCut = 3; % how many delta's should we take
+%untrustedPx = sets.bitmasking.deltaCut*sets.bitmasking.psfSigmaWidth_nm/sets.bitmasking.prestretchPixelWidth_nm;
+
+[consensus]
+barcodeNormalization = 'bgmean';
+promptForBarcodeClusterLimit = 1;
+threshold = 0.75;
+
+% import OptMap.MoleculeDetection.EdgeDetection.get_default_edge_detection_settings;
+%  sets.edgeDetectionSettings = get_default_edge_detection_settings(sets.skipDoubleTanhAdjustment);
+
+[export]
+savetxt = 1;
+
+[theory]
+askfortheory = 1;
+precision = 5;  %default is 5;
+askfornmbp = 0;
+nmbp = 0.3;
+skipStretch = 1;
+stretchFactors = 0.9:0.02:1.1; 
+%[0.95 0.96 0.9700    0.9800    0.9900    1.0000    1.0100    1.0200    1.0300 1.04 1.05];
+%    sets.theory.askfortheory = 1;
+% 	sets.theoryFileFold{1} = '/home/albyback/rawData/dnaData/humanData/';
+%     sets.theoryFile{1}= 'ncbi_chromosomes_181022_130nmPixel_0.3nmPERbp.mat';
+%   sets.theoryFileFold{1} = '';
+%   sets.theoryFile{1} = '';
+%  sets.theory.askfornmbp = 1;
+%  sets.theory.nmbp = 0.225;
+%sets.theory.skipStretch = 1; %0 - do not stretch,  1 - stretch
+%	sets.theory.stretchFactors = [0.95 0.96 0.9700    0.9800    0.9900    1.0000    1.0100    1.0200    1.0300 1.04 1.05];
+%         % 
+    
+
+[pvalue];    
+file = '';
+scoreFolder = 'D:\Arkivet\DNAdev\hca\files\randomScores\';
+fastaFolder = 'D:\Arkivet\DNAdev\hca\files\randomFasta\';
+paramFolder = 'D:\Arkivet\DNAdev\hca\files\';
+promtforparams = 0;
+len2 = 5000000;
+lenMin = 100;
+lenMax = 1000;
+numRnd = 1000;
+psfSigmaWidth_nm = 165;
+pixelWidth_nm = 108.33;
+nmbp = 0.3;
+pattern = 'CTTAAG';
+lenLong = 1e5;
+lenShort = 1000;
+stretchMax = 0;
+barcodeType = 'dots'; % cb, dots
+variableType = 'stretchMax'; % lenLong, lenShort, stretchMax, psf
+varMin = 0;
+varStep = 0.01;
+varMax = 0.2;
+cbRandomizationMethod = 'randn'; % randomNucleotide, phaseRandomization, hybrid, randn
+    
+[output]
+matDirpath = ''
+askforoutputdir = 1;
+

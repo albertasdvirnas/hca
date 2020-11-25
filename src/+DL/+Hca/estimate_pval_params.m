@@ -64,7 +64,7 @@ end
 paramFilePath = fullfile(sets.pvalue.paramFolder, paramFileName);
 import CBT.Hca.Import.load_pval_struct;
 [vals, data] = load_pval_struct(paramFilePath);
-if ismember(sets.pvalue.psfSigmaWidth_nm, vals)
+if ismember(round(psfPx,4), vals)
   error(compose("Zero-model parameters for this PSF are already in file: %s", paramFilePath))
 end
 
@@ -135,7 +135,7 @@ switch sets.pvalue.barcodeType
         [4 1 1], ...
         [inf 1 inf], ...
         [nanmean(longVarNu) 1 1], ...
-        [true true false]);
+        [false true false]);
     end
   case 'dots'
     for i=1:length(stretchVar)
@@ -145,7 +145,7 @@ switch sets.pvalue.barcodeType
         [0 1e-16 1e-16 1], ...
         [1 1 1 inf], ...
         [nanmean(longVarMu) nanmean(longVarXi) nanmean(longVarSigma) 1], ...
-        [true true true false]);
+        [true true false false]);
     end
 end
 fitExa = fit( ...
@@ -217,7 +217,7 @@ end
 
 %% Write output to file
 import CBT.Hca.Export.export_pval_struct;
-vals(end+1) = sets.pvalue.psfSigmaWidth_nm;
+vals(end+1) = round(psfPx,4);
 data{end+1} = params;
 [vals, sortedId] = sort(vals);
 export_pval_struct(paramFilePath, vals, data(sortedId));
