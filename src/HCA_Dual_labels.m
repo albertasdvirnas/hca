@@ -47,18 +47,54 @@ if nargin < 2
   theoryStruct = get_user_theory_dl(sets);
   assignin('base','theoryStruct', theoryStruct)
   
-%   import CBT.Hca.Settings.get_user_theory;
-%   theoryStruct = get_user_theory(sets);
-%   tmptheoryStruct = get_user_theory(sets);
-%   theoryStruct.filename2 = tmptheoryStruct.filename;
-%   assignin('base','theoryStruct', theoryStruct)
+  %   import CBT.Hca.Settings.get_user_theory;
+  %   theoryStruct = get_user_theory(sets);
+  %   tmptheoryStruct = get_user_theory(sets);
+  %   theoryStruct.filename2 = tmptheoryStruct.filename;
+  %   assignin('base','theoryStruct', theoryStruct)
+  
+  [molTableFileName, dirpath] = uigetfile('*.*', 'Select file containing molecule data-table');
+  externalAlignmentStruct = struct();
+  externalAlignmentStruct.idx = 1;
+  if not(isequal(dirpath, 0))
+    molDataTable = readtable(fullfile(dirpath, molTableFileName));
+    externalAlignmentStruct.molIds = cellfun(@(x) str2double(x.name(1:end-4)), barcodeGen(1,:));
+    [~, tableIds] = ismember(externalAlignmentStruct.molIds, molDataTable.MoleculeID);
+    externalAlignmentStruct.Z = -norminv(10.^-molDataTable.Confidence(tableIds));
+    refStartPosBp = min(molDataTable.RefStartPos(tableIds), molDataTable.RefEndPos(tableIds));
+    qryFirstDotPos = min(molDataTable.QryStartPos(tableIds), molDataTable.QryLen(tableIds) - molDataTable.QryStartPos(tableIds));
+    externalAlignmentStruct.firstDotPos = qryFirstDotPos./molDataTable.QryLen(tableIds).*molDataTable.Length(tableIds)/375;
+    externalAlignmentStruct.pos = max(1, ceil(refStartPosBp/sets.pvalue.pixelWidth_nm*sets.pvalue.nmbp-externalAlignmentStruct.firstDotPos));
+    externalAlignmentStruct.or = strcmp(molDataTable.Orientation(tableIds), '-')+1;
+    if length(theoryStruct) > 1
+      list = cellfun(@(x) x.name, theoryStruct, 'un', 0);
+      externalAlignmentStruct.idx = listdlg('PromptString', ...
+        {'Select which theory the molecule' 'positions are referring to:'}, ...
+        'ListString', list, 'SelectionMode', 'Single');
+    end
+  end
+  assignin('base','externalAlignmentStruct', externalAlignmentStruct)
   
   %% compare theory to experiment
-  import CBT.Hca.Core.Comparison.compare_distance;
-  rezMax = compare_distance( ...
-    barcodeGen, ...
-    theoryStruct, ...
-    sets);
+  rezMax = cell(1,length(theoryStruct));
+  import DL.Hca.on_compare_dual_label;
+  for barNr = 4%1:length(theoryStruct)
+    disp(strcat(['comparing to theory barcode ' num2str(barNr) '_' theoryStruct{barNr}.filename] ));
+    if not(isempty(fieldnames(externalAlignmentStruct))) && externalAlignmentStruct.idx == barNr
+      rezMax{barNr} = on_compare_dual_label( ...
+        barcodeGen, ...
+        theoryStruct{barNr}, ...
+        20, ...
+        sets, ...
+        externalAlignmentStruct);
+    else
+      rezMax{barNr} = on_compare_dual_label( ...
+        barcodeGen, ...
+        theoryStruct{barNr}, ...
+        20, ...
+        sets);
+    end
+  end
   assignin('base','rezMax', rezMax)
   
   import DL.Hca.combine_theory_results_dl;
@@ -72,7 +108,8 @@ if nargin < 2
     barcodeGen, ...
     comparisonStruct, ...
     theoryStruct, ...
-    sets);
+    sets, ...
+    externalAlignmentStruct);
   
   
 else

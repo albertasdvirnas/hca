@@ -1,28 +1,13 @@
-function [] = plot_best_bar_dl(fig1, barcodeGen, comparisonStruct, theoryStruct, userDefinedSeqCushion, ii, scoreType, typeInd)
+function [] = plot_bar_at_pos(barcodeGen, ii, theoryStruct, pos, or, stretch, idx, score, userDefinedSeqCushion, typeInd)
 % plot_best_bar
 
 % plots best barcode vs theory in case barcode is always larger than
 % theory
-if nargin < 7
-  userDefinedSeqCushion = 0;
-end
-
-len1=size(barcodeGen, 2);
-
-thisCompStruct = subsref(comparisonStruct{ii}, substruct('.', scoreType));
-
-pos = thisCompStruct.pos(1);
-or = thisCompStruct.or(1);
-stretch = thisCompStruct.bestBarStretch;
-indcoef = thisCompStruct.maxcoefPartsCC(typeInd,1);
-idx = thisCompStruct.idx;
 
 switch typeInd
   case 1
-    btype = 'cb';
     fname = theoryStruct{idx}.filename;
   case 2
-    btype = 'dots';
     fname = theoryStruct{idx}.filename2;
 end
 tname = theoryStruct{idx}.name;
@@ -44,36 +29,11 @@ if isempty(niceName)
   niceName = strrep(tname,'_','\_');
 end
 
-
-
-% bitmask. In case of linear barcode, would like to modify this
-%     theorBit = ones(1,thrLen);
-
-% load either theory barcode or the consensus barcode
-% try
-  expBar = barcodeGen{1,ii}.rawBarcode;
-  expBit = barcodeGen{1,ii}.rawBitmask;
-% catch
-%   try
-%     expBar = consensusStruct.rawBarcode;
-%     expBit = consensusStruct.rawBitmask;
-%   catch
-%     expBar = consensusStruct{ii-length(barcodeGen)}.rawBarcode;
-%     expBit = consensusStruct{ii-length(barcodeGen)}.rawBitmask;
-%   end
-%   
-% end
-
-expLen = length(expBar);
-
-% interpolate to the length which gave best CC value
-expBar = interp1(expBar, linspace(1,expLen,expLen*stretch));
-expBit = expBit(round(linspace(1,expLen,expLen*stretch)));
-expBar(~expBit)= nan;
-
-
+expBar = barcodeGen{ii}.rawBarcode;
+expBar = interp1(expBar, linspace(1,length(expBar),length(expBar)*stretch));
+name = barcodeGen{ii}.name(1:end-4);
 % expBar with expanded cushion
-expBar = [ repmat(nan,1,userDefinedSeqCushion) expBar repmat(nan,1,userDefinedSeqCushion)];
+expBar = [nan(1,userDefinedSeqCushion) expBar nan(1,userDefinedSeqCushion)];
 
 %     numSt = min(userDefinedSeqCushion,userDefinedSeqCushion-comparisonStruct{ii}.pos(1));
 % don't allow theory start to loop over
@@ -82,7 +42,7 @@ theoryEnd = pos-userDefinedSeqCushion+length(expBar)-1;
 
 if theoryStart < 1
   % in circular case, these should be taken from the end of theorBar
-  theorBar = [ repmat(nan,abs(theoryStart)+1,1); theorBar];
+  theorBar = [ nan(abs(theoryStart)+1,1); theorBar];
   theoryEnd = theoryEnd + abs(theoryStart)+1;
   theoryStart = 1;
   thrLen = thrLen+abs(theoryStart)+1;
@@ -123,15 +83,10 @@ plot(theoryIndBp, barfragr{1})
 
 xlabel('Position along the sequence cushion (bp)','Interpreter','latex')
 ylabel('Z-scored','Interpreter','latex')
-if ii <= len1
-  name = barcodeGen{ii}.name(1:end-4);
-else
-  name = 'consensus';
-end
 
 title(strcat(['Experimental barcode vs theory ']),'Interpreter','latex');
 %
-legend({strcat(['$\hat C_{\rm ' name '}^{' btype '}=$' num2str(indcoef,'%0.2f')]), niceName},'Interpreter','latex')
+legend({strcat(['$\hat C_{\rm{' name '}}^{\rm{bionano}}=$' num2str(score,'%0.2f')]), niceName},'Interpreter','latex')
 
 
 

@@ -13,7 +13,7 @@ function [ rezMaxC ] = combine_theory_results_dl(theoryStruct, rezMax)
 rezMaxC = cell(1, length(rezMax{1}));
 
 for i=1:length(rezMax{1})
-  for btype = ["dual", "dense", "sparse"]
+  for btype = ["dual", "dense", "sparse", "external"]
     thisRezMax = cellfun(@(x) ...
       cellfun(@(y) subsref(y, substruct('.', btype)), x, 'un', 0), ...
       rezMax, 'un', 0);

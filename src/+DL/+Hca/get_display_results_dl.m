@@ -1,4 +1,4 @@
-function [] = get_display_results_dl(barcodeGen, comparisonStruct,theoryStruct, sets)
+function [] = get_display_results_dl(barcodeGen, comparisonStruct,theoryStruct, sets, externalAlignmentStruct)
 % get_display_results
 % Display results from the comparison of experiments vs theory
 %     Args:
@@ -30,40 +30,26 @@ maxcoefSparse = cell2mat(cellfun(@(x) x.sparse.maxcoef,comparisonStruct,'Uniform
 [~, ii] = max(maxcoef(:,1));
 
 % plot best positions
-[molTableFileName, dirpath] = uigetfile('*.*', 'Select file containing molecule data-table');
-if not(isequal(dirpath, 0))
-  molDataTable = readtable(fullfile(dirpath, molTableFileName));
-  molIds = cellfun(@(x) str2double(x.name(1:end-4)), barcodeGen(1,:));
-  [~, tableIds] = ismember(molIds, molDataTable.MoleculeID);
-  bionanoConfidence = molDataTable.Confidence(tableIds);
-  bionanoZ = -norminv(10.^-bionanoConfidence);
-  bionanoPositionsBp = min(molDataTable.RefStartPos(tableIds), ...
-    molDataTable.RefStartPos(tableIds));
-  bionanoPositions = bionanoPositionsBp/sets.pvalue.pixelWidth_nm*sets.pvalue.nmbp;
-  list = cellfun(@(x) x.name, theoryStruct, 'un', 0);
-  bionanoIdx = listdlg('PromptString', ...
-    {'Select which theory the molecule' 'positions are referring to:'}, ...
-    'ListString', list, 'SelectionMode', 'Single');
-  if isempty(bionanoIdx); return; end
 
+if nargin > 4
   % plot max corr coefs
   subplot(2,2,1);hold on;
   import DL.Hca.plot_max_coef_dl;
-  fig1 = plot_max_coef_dl(fig1, maxcoef, maxcoefDense, maxcoefSparse, numBar, sets, markers, bionanoZ);
-
+  fig1 = plot_max_coef_dl(fig1, maxcoef, maxcoefDense, maxcoefSparse, numBar, sets, markers, 1, externalAlignmentStruct.Z);
+  
   subplot(2,2,2);hold on;
   import DL.Hca.plot_best_pos_dl;
-  plot_best_pos_dl(fig1,comparisonStruct, numBar, sets, markers,lengthBorders, bionanoPositions, bionanoIdx);
+  plot_best_pos_dl(fig1,comparisonStruct, numBar, sets, markers,lengthBorders, 1, externalAlignmentStruct.pos, externalAlignmentStruct.idx);
 else
-
+  
   % plot max corr coefs
   subplot(2,2,1);hold on;
   import DL.Hca.plot_max_coef_dl;
-  fig1 = plot_max_coef_dl(fig1, maxcoef, maxcoefDense, maxcoefSparse, numBar, sets, markers);
-
+  fig1 = plot_max_coef_dl(fig1, maxcoef, maxcoefDense, maxcoefSparse, numBar, sets, markers, 1);
+  
   subplot(2,2,2);hold on;
   import DL.Hca.plot_best_pos_dl;
-  plot_best_pos_dl(fig1, comparisonStruct, numBar, sets, markers, lengthBorders);
+  plot_best_pos_dl(fig1, comparisonStruct, numBar, sets, markers, lengthBorders, 1);
 end
 
 subplot(2,2,3); hold on
@@ -74,20 +60,41 @@ plot_best_bar_dl(fig1,barcodeGen(1,:),comparisonStruct, theoryStruct, sets.userD
 subplot(2,2,4); hold on
 %todo: improve this plot with more information
 plot_best_bar_dl(fig1,barcodeGen(2,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, ii, 'dual', 2);
-
+hold off
 
 %%
-% b = 3;
+% %
+% stretchF = cellfun(@(x) x.external.bestBarStretch, comparisonStruct);
+% for i=1:numBar
+%   import DL.Hca.plot_bar_at_pos;
+%   f = figure;
+%   subplot(2,1,1); hold on
+%   if isfield(comparisonStruct{i}.external, 'maxcoefParts')
+%     plot_bar_at_pos(barcodeGen(1,:), i, theoryStruct, externalAlignmentStruct.pos(i), externalAlignmentStruct.or(i), stretchF(i), externalAlignmentIdx, comparisonStruct{i}.external.maxcoefPartsCC(1), sets.userDefinedSeqCushion, 1)
+%     subplot(2,1,2);
+%     plot_bar_at_pos(barcodeGen(2,:), i, theoryStruct, externalAlignmentStruct.pos(i), externalAlignmentStruct.or(i), stretchF(i), externalAlignmentIdx, comparisonStruct{i}.external.maxcoefPartsCC(2), sets.userDefinedSeqCushion, 2)
+%   else
+%     plot_bar_at_pos(barcodeGen(1,:), i, theoryStruct, externalAlignmentStruct.pos(i), externalAlignmentStruct.or(i), stretchF(i), externalAlignmentIdx, nan, sets.userDefinedSeqCushion, 1)
+%     subplot(2,1,2);
+%     plot_bar_at_pos(barcodeGen(2,:), i, theoryStruct, externalAlignmentStruct.pos(i), externalAlignmentStruct.or(i), stretchF(i), externalAlignmentIdx, nan, sets.userDefinedSeqCushion, 2)
+%   end
+%   hold off
+% end
+
+
+
+% b = 1;
 % btype = {'dual', 'dense', 'sparse'};
 % for i=1:numBar
 % %   [maxAll, b] = max([maxcoef(i,1) maxcoefDense(i,1) maxcoefSparse(i,1)]);
-% %   if maxAll < 3; continue; end
+%   if maxcoef(i,1) < 3; continue; end
 % %   disp([i maxAll b])
-%   figure;
+%   f = figure;
 %   subplot(2,1,1); hold on
-%   plot_best_bar_dl(fig1,barcodeGen(1,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, btype{b}, 1);
+%   plot_best_bar_dl(f,barcodeGen(1,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, btype{b}, 1);
 %   subplot(2,1,2);
-%   plot_best_bar_dl(fig1,barcodeGen(2,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, btype{b}, 2);
+%   plot_best_bar_dl(f,barcodeGen(2,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, btype{b}, 2);
 %   hold off
+% %   saveas(f, fullfile(pwd, 'out', barcodeGen{1, i}.name(1:end-4)), 'png');
 % end
 end
