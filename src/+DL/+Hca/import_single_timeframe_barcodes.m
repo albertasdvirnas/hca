@@ -58,7 +58,8 @@ for i=1:length(itemsToImportFilenames)
     case '.txt'
       importStruct{i}.alignedKymo = importdata(filePath);
     otherwise
-      importStruct{i}.alignedKymo = im2double(imread(filePath));
+      importStruct{i}.rawIntensity = imread(filePath);
+      importStruct{i}.alignedKymo = im2double(importStruct{i}.rawIntensity);
   end
   importStruct{i}.name = itemsToImportFilenames{i};
   importStruct{i}.leftEdgeIdxs = 1;
@@ -68,6 +69,12 @@ end
 % generate barcodes
 import CBT.Hca.Core.gen_barcodes;
 barcodeGen = CBT.Hca.Core.gen_barcodes(importStruct, sets);
+
+for i=1:length(importStruct)
+  if isfield(importStruct{i}, 'rawIntensity')
+    barcodeGen{i}.rawIntensity = importStruct{i}.rawIntensity;
+  end
+end
 
 import CBT.Hca.Core.filter_barcode; % in case we need to filter barcode
 for i=1:length(barcodeGen)
