@@ -18,7 +18,8 @@ saveinfoscores = 1; % if to save infoscores
 
 skipPrechoice = 1;
 prestretchMethod = 0; % 0 - do not prestretch % 1 - prestretch to common length
-theories = 'theories_2020-03-13_15_17_22_.txt'; % theories either as mat or directly txts
+theories = 'theories_2020-11-27_21_33_46_.txt'; % theories either as mat or directly txts
+sparseTheories = 'theories_2020-11-27_21_34_39_.txt'; % theories either as mat or directly txts
 
 userDefinedSeqCushion = 50;
 
@@ -50,8 +51,8 @@ cutoutSize = 200; % size of region to be cut out (units: pixels)
 
 % bitmask settings
 [bitmasking]
-prestretchPixelWidth_nm = 130; % camera nm/px
-psfSigmaWidth_nm = 300; % psf in nanometers
+prestretchPixelWidth_nm = 108.33; % camera nm/px
+psfSigmaWidth_nm = 200; % psf in nanometers
 deltaCut = 3; % how many delta's should we take
 %untrustedPx = sets.bitmasking.deltaCut*sets.bitmasking.psfSigmaWidth_nm/sets.bitmasking.prestretchPixelWidth_nm;
 
@@ -70,20 +71,9 @@ savetxt = 1;
 askfortheory = 1;
 precision = 5;  %default is 5;
 askfornmbp = 0;
-nmbp = 0.3;
+nmbp = 0.32;
 skipStretch = 1;
-stretchFactors = 0.9:0.02:1.1; 
-%[0.95 0.96 0.9700    0.9800    0.9900    1.0000    1.0100    1.0200    1.0300 1.04 1.05];
-%    sets.theory.askfortheory = 1;
-% 	sets.theoryFileFold{1} = '/home/albyback/rawData/dnaData/humanData/';
-%     sets.theoryFile{1}= 'ncbi_chromosomes_181022_130nmPixel_0.3nmPERbp.mat';
-%   sets.theoryFileFold{1} = '';
-%   sets.theoryFile{1} = '';
-%  sets.theory.askfornmbp = 1;
-%  sets.theory.nmbp = 0.225;
-%sets.theory.skipStretch = 1; %0 - do not stretch,  1 - stretch
-%	sets.theory.stretchFactors = [0.95 0.96 0.9700    0.9800    0.9900    1.0000    1.0100    1.0200    1.0300 1.04 1.05];
-%         % 
+stretchFactors = .9:0.02:1.1;
     
 
 [pvalue];    
@@ -96,19 +86,19 @@ len2 = 5000000;
 lenMin = 100;
 lenMax = 1000;
 numRnd = 1000;
-psfSigmaWidth_nm = 165;
+psfSigmaWidth_nm = 200;
 pixelWidth_nm = 108.33;
-nmbp = 0.3;
+nmbp = 0.32;
 pattern = 'CTTAAG';
 lenLong = 1e5;
 lenShort = 1000;
 stretchMax = 0;
-barcodeType = 'dots'; % cb, dots
-variableType = 'stretchMax'; % lenLong, lenShort, stretchMax, psf
-varMin = 0;
-varStep = 0.01;
-varMax = 0.2;
-cbRandomizationMethod = 'randn'; % randomNucleotide, phaseRandomization, hybrid, randn
+barcodeType = 'cb'; % cb, dots
+variableType = 'lenShort'; % lenLong, lenShort, stretchMax, psf
+varMin = 50;
+varStep = 50;
+varMax = 5000;
+cbRandomizationMethod = 'hybrid'; % phaseRandomization, hybrid, randn, sample, randg
     
 [output]
 matDirpath = ''
