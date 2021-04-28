@@ -11,19 +11,26 @@ len1=size(barcodeGen, 2);
 
 thisCompStruct = subsref(comparisonStruct{ii}, substruct('.', scoreType));
 
-pos = thisCompStruct.pos(1);
 or = thisCompStruct.or(1);
-stretch = thisCompStruct.bestBarStretch;
 indcoef = thisCompStruct.maxcoefPartsCC(typeInd,1);
 idx = thisCompStruct.idx;
 
 switch typeInd
   case 1
-    btype = 'cb';
+    btype = 'dense';
     fname = theoryStruct{idx}.filename;
+    try
+      pos = thisCompStruct.optPos(1);
+      stretch = thisCompStruct.optStr(1);
+    catch
+      pos = thisCompStruct.pos(1);
+      stretch = thisCompStruct.bestBarStretch;
+    end
   case 2
-    btype = 'dots';
+    btype = 'sparse';
     fname = theoryStruct{idx}.filename2;
+    pos = thisCompStruct.pos(1);
+    stretch = thisCompStruct.bestBarStretch;
 end
 tname = theoryStruct{idx}.name;
 % theory length
@@ -67,22 +74,24 @@ end
 expLen = length(expBar);
 
 % interpolate to the length which gave best CC value
-expBar = interp1(expBar, linspace(1,expLen,expLen*stretch));
-expBit = expBit(round(linspace(1,expLen,expLen*stretch)));
+v = linspace(1,expLen,expLen*stretch);
+expBar = interp1(expBar, v);
+expBit = logical(expBit(round(v)));
 expBar(~expBit)= nan;
 
 
 % expBar with expanded cushion
-expBar = [ repmat(nan,1,userDefinedSeqCushion) expBar repmat(nan,1,userDefinedSeqCushion)];
+expBar = [nan(1, userDefinedSeqCushion) expBar nan(1, userDefinedSeqCushion)];
+expBit = [false(1, userDefinedSeqCushion) expBit false(1, userDefinedSeqCushion)];
 
 %     numSt = min(userDefinedSeqCushion,userDefinedSeqCushion-comparisonStruct{ii}.pos(1));
 % don't allow theory start to loop over
 theoryStart = pos-userDefinedSeqCushion;
-theoryEnd = pos-userDefinedSeqCushion+length(expBar)-1;
+theoryEnd = pos-userDefinedSeqCushion+length(expBar)-1;    
 
 if theoryStart < 1
   % in circular case, these should be taken from the end of theorBar
-  theorBar = [ repmat(nan,abs(theoryStart)+1,1); theorBar];
+  theorBar = [nan(abs(theoryStart)+1,1); theorBar];
   theoryEnd = theoryEnd + abs(theoryStart)+1;
   theoryStart = 1;
   thrLen = thrLen+abs(theoryStart)+1;
@@ -94,31 +103,27 @@ end
 
 theoryIndBp = ceil((theoryStart:theoryEnd)*theoryStruct{idx}.pixelWidth_nm/theoryStruct{idx}.meanBpExt_nm);
 
-barStruct.bar1 = expBar;
-barStruct.bar2= theorBar;
-
-if or == 1
-  barStruct.matchTable = [1 length(expBar) theoryStart theoryEnd or];
-else
-  barStruct.matchTable = [1 length(expBar) theoryEnd theoryStart or];
-end
-
-import CBT.Hca.UI.Helper.create_full_table;
-[temp_table,barfragq, barfragr] = create_full_table(barStruct.matchTable, barStruct.bar1,barStruct.bar2,1);
+barfragq = expBar;
+barfragr = theorBar(theoryStart:theoryEnd);
 
 switch typeInd
   case 1
-    barfragq{1}(~isnan(barfragq{1})) = zscore(barfragq{1}(~isnan(barfragq{1})));
-    barfragr{1}(~isnan(barfragr{1})) = zscore(barfragr{1}(~isnan(barfragr{1})));
+    barfragq = (barfragq - nanmean(barfragq(expBit)))/nanstd(barfragq(expBit));
+    barfragr = (barfragr - nanmean(barfragr(expBit)))/nanstd(barfragr(expBit));
   case 2
-    barfragq{1}(~isnan(barfragq{1})) = barfragq{1}(~isnan(barfragq{1}))/mean(barfragq{1}(~isnan(barfragq{1})))*mean(barfragr{1}(~isnan(barfragr{1})));
+    barfragq = barfragq/nanmean(barfragq)*nanmean(barfragr);
+end
+
+if or == 2
+  barfragq = fliplr(barfragq);
 end
 
 %     figure,
-plot(theoryIndBp, barfragq{1})
+plot(theoryIndBp, barfragq)
 hold on
-plot(theoryIndBp, barfragr{1})
+plot(theoryIndBp, barfragr)
 
+xlim([theoryIndBp(1) theoryIndBp(end)])
 
 
 xlabel('Position along the sequence cushion (bp)','Interpreter','latex')

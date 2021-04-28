@@ -8,11 +8,11 @@ for i=1:length(barcodeGenDense)
       barcodeGenSparse{i}.name(1:end-4)))
     warning('Difference found in barcode pair names.')
   end
-  if not(length(barcodeGenSparse{i}.rawBarcode) ...
-      == length(barcodeGenDense{i}.rawBarcode))
-    throw(MException('barcodeGenMerge:lengthDiscrepancy', ...
-      'Barcode length discrepancy detected, aborting barcode import.'));
-  end
+%   if not(length(barcodeGenSparse{i}.rawBarcode) ...
+%       == length(barcodeGenDense{i}.rawBarcode))
+%     throw(MException('barcodeGenMerge:lengthDiscrepancy', ...
+%       'Barcode length discrepancy detected, aborting barcode import.'));
+%   end
 barcodeGen = [barcodeGenDense; barcodeGenSparse];
 end
 

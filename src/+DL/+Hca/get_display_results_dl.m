@@ -31,7 +31,7 @@ maxcoefSparse = cell2mat(cellfun(@(x) x.sparse.maxcoef,comparisonStruct,'Uniform
 
 % plot best positions
 
-if nargin > 4
+if nargin > 5 && not(isempty(fieldnames(externalAlignmentStruct)))
   % plot max corr coefs
   subplot(2,2,1);hold on;
   import DL.Hca.plot_max_coef_dl;
@@ -87,7 +87,8 @@ hold off
 % btype = {'dual', 'dense', 'sparse'};
 % for i=1:numBar
 % %   [maxAll, b] = max([maxcoef(i,1) maxcoefDense(i,1) maxcoefSparse(i,1)]);
-%   if maxcoef(i,1) < 3; continue; end
+% %   if maxcoefDense(i,1) < 3; continue; end
+%   disp(i)
 % %   disp([i maxAll b])
 %   f = figure;
 %   subplot(2,1,1); hold on
@@ -95,6 +96,7 @@ hold off
 %   subplot(2,1,2);
 %   plot_best_bar_dl(f,barcodeGen(2,:),comparisonStruct, theoryStruct, sets.userDefinedSeqCushion, i, btype{b}, 2);
 %   hold off
-% %   saveas(f, fullfile(pwd, 'out', barcodeGen{1, i}.name(1:end-4)), 'png');
+%   saveas(f, fullfile(pwd, 'out', barcodeGen{1, i}.name(1:end-4)), 'png');
+%   close(f)
 % end
 end

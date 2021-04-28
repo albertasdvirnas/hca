@@ -12,7 +12,7 @@ for i=1:length(stretchFactor)
   v = linspace(1, length(randShort), round(length(randShort)*stretchFactor(i)));
   interpBarcode = interp1(randShort, v);
   switch barcodeType
-    case 'cb'
+    case {'cb', 'ecodam'}
       scoreMat = MASS_PCC(randLong, interpBarcode, 2^(4+nextpow2(length(interpBarcode))));
     case 'dots'
       scoreMat = MASS_DOT_CC(randLong, interpBarcode, 2^(4+nextpow2(length(interpBarcode))));

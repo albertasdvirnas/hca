@@ -35,10 +35,6 @@ switch sets.pvalue.variableType
     error('Bad variable type selected for random score generation')
 end
 
-% temp?
-cN = 6;
-cY = 0.02;
-
 % Input/Output
 if not(isfolder(sets.pvalue.scoreFolder))
   mkdir(sets.pvalue.scoreFolder);
@@ -46,25 +42,42 @@ end
 if not(isfolder(sets.pvalue.fastaFolder))
   mkdir(sets.pvalue.fastaFolder);
 end
+if strcmp(sets.pvalue.barcodeType, 'dots')
+  typeName = sets.pvalue.pattern;
+else
+  typeName = sets.pvalue.barcodeType;
+end
 scoreFileName = compose("%s_scores_long_%s_short_%s_psf_%s_stretch_%s.txt", ...
-  sets.pvalue.barcodeType, lenLong_name, lenShort_name, psfPx_name, stretchMax_name);
+  typeName, lenLong_name, lenShort_name, psfPx_name, stretchMax_name);
 meansFileName = compose("%s_means_long_%s_short_%s_psf_%s_stretch_%s.txt", ...
-  sets.pvalue.barcodeType, lenLong_name, lenShort_name, psfPx_name, stretchMax_name);
+  typeName, lenLong_name, lenShort_name, psfPx_name, stretchMax_name);
 scoreFilePath = fullfile(sets.pvalue.scoreFolder, scoreFileName);
 meansFilePath = fullfile(sets.pvalue.scoreFolder, meansFileName);
 import CBT.Hca.Import.load_pval_struct;
 [~, data] = load_pval_struct(scoreFilePath);
 [~, means] = load_pval_struct(meansFilePath);
 alreadyInData = length(data);
-if strcmp(sets.pvalue.barcodeType, 'cb') ...
-    && any(strcmp(sets.pvalue.cbRandomizationMethod, ...
-    {'phaseRandomization', 'hybrid'}))
-  [meanfftFilename, dirpath] = uigetfile('*.mat', 'Select file with mean fft magnitudes');
-  if isequal(dirpath, 0)
-      return;
-  end
-  meanfftFile = load(fullfile(dirpath, meanfftFilename));
-  meanfft = meanfftFile.meanFFT;
+if strcmp(sets.pvalue.barcodeType, 'cb')
+    switch sets.pvalue.cbRandomizationMethod, ...
+      case {'phaseRandomization', 'hybrid'}
+        [meanfftFilename, dirpath] = uigetfile('*.mat', 'Select file with mean fft magnitudes');
+        if isequal(dirpath, 0)
+            return;
+        end
+        meanfftFile = load(fullfile(dirpath, meanfftFilename));
+        meanfft = meanfftFile.meanFFT;
+      case 'sample'
+        fid = fopen(sets.theories);
+        thrNames = textscan(fid,'%s','delimiter','\n');
+        fclose(fid);
+        for i=1:length(thrNames{1})
+          fid = fopen(thrNames{1}{i});
+          tmpStream = textscan(fid,'%f','delimiter','\t');
+          theories{i} = tmpStream{1}';
+          fclose(fid);
+        end
+        theoryNumPixels = round(3088286401/sets.pvalue.pixelWidth_nm*sets.pvalue.nmbp);
+    end
 end
 
 %%
@@ -96,30 +109,28 @@ for psfPx=psfPx_all
             randLong = randLong(t:t+lenLong-1);
             if strcmp(sets.pvalue.cbRandomizationMethod, 'hybrid')
               randLongExtra = normrnd(0, 1, 1, lenLong);
-              randLongExtra = convolve_bar(randLongExtra, psfPx, lenLong);
-              randLong = zscore(randLong) + zscore(randLongExtra);
+              randLong = 0.7*zscore(randLong) +  0.3*zscore(convolve_bar(randLongExtra, psfPx, lenLong));
             end
-          case 'randomNucleotide'
-            randFastaName = compose("random_fasta_length_%.0f.fasta", lenLongBp);
-            randFastaPath = fullfile(sets.pvalue.fastaFolder, randFastaName);
-            if not(isfile(randFastaPath))
-              import DL.Hca.generate_random_fasta
-              generate_random_fasta(randFastaPath, lenLongBp)
-            end
-            import CBT.Hca.Core.Theory.cb_model
-            model = cb_model();
-            import DL.Hca.compute_theory_barcode
-            randLong = compute_theory_barcode( ...
-              randFastaPath, ...
-              bppx, ...
-              psfBp, ...
-              cN,  ...
-              cY, ...
-              model.yoyoBindingConstant, ...
-              model.netropsinBindingConstant, ...
-              2^15, 2^13);
+          case 'sample'
+            flip = logical(randi(2, 1, length(theories))-1);
+            theories(flip) = cellfun(@fliplr, theories(flip), 'un', 0);
+            theories = theories(randperm(length(theories)));
+            t = randi(theoryNumPixels-lenLong+1);
+            cl = cumsum(cellfun(@length, theories));
+            t1 = find(cl >= t, 1);
+            t2 = find(cl >= t+lenLong-1, 1);
+            randLong = [theories{t1:t2}];
+            t = randi(length(randLong)-lenLong+1);
+            randLong = randLong(t:t+lenLong-1);
+            unusedTheories = [theories{1:t1-1} theories{t2+1:end}];
         end
-      case 'dots'
+      case {'dots', 'ecodam'}
+        switch sets.pvalue.barcodeType
+          case 'dots'
+            pattern = sets.pvalue.pattern;
+          case 'ecodam'
+            pattern = 'GATC';
+        end
         randFastaName = compose("random_fasta_length_%.0f.fasta", lenLongBp);
         randFastaPath = fullfile(sets.pvalue.fastaFolder, randFastaName);
         if not(isfile(randFastaPath))
@@ -129,7 +140,7 @@ for psfPx=psfPx_all
         import DL.Hca.compute_theory_dotbar
         randLong = compute_theory_dotbar( ...
           randFastaPath, ...
-          sets.pvalue.pattern, ...
+          pattern, ...
           bppx, ...
           psfBp, ...
           2^15, 2^13);
@@ -153,10 +164,9 @@ for psfPx=psfPx_all
           0, ...
           "Comparing barcode pair 1, estimated time remaining: inf minutes.", ...
             'Position', [0, 0, 200, 50]);
-        timespent = 0;
+        tic
         % For each random sample
         for i=1:sets.pvalue.numRnd
-          tic
           % Generate short barcode
           lenShortBp = round(lenShort*bppx);
           switch sets.pvalue.barcodeType
@@ -174,29 +184,24 @@ for psfPx=psfPx_all
                   randShort = randShort(t:t+lenShort-1);
                   if strcmp(sets.pvalue.cbRandomizationMethod, 'hybrid')
                     randShortExtra = normrnd(0, 1, 1, lenShort);
-                    randShortExtra = convolve_bar(randShortExtra, psfPx, lenShort);
-                    randShort = zscore(randShort) + zscore(randShortExtra);
+                    randShort = 0.7*zscore(randShort) + 0.3*zscore(convolve_bar(randShortExtra, psfPx, lenShort));
                   end
-                case 'randomNucleotide'
-                  import CBT.Hca.Core.Theory.cb_model
-                  model = cb_model();
-                  import CBT.Hca.Core.Theory.cb_theory;
-                  randShort = cb_theory( ...
-                    randseq(lenShortBp, 'DataType', 'uint8'), ...
-                    cN,  ...
-                    cY, ...
-                    model.yoyoBindingConstant, ...
-                    model.netropsinBindingConstant, ...
-                    0);
-                  randShort = convolve_bar(randShort(:)', psfBp, lenShortBp);
-                  randShort = interp1(randShort, linspace(1, lenShortBp, lenShort));
+                case 'sample'
+                  t = randi(length(unusedTheories)-lenShort+1);
+                  randShort = unusedTheories(t:t+lenShort-1);
               end
-            case 'dots'
+            case {'dots', 'ecodam'}
+              switch sets.pvalue.barcodeType
+                case 'dots'
+                  pattern = sets.pvalue.pattern;
+                case 'ecodam'
+                  pattern = 'GATC';
+              end
               randSeq = randseq(lenShortBp);
               [~, refDotsBpRes] = restrict( ...
                 randSeq(:)', ...
-                sets.pvalue.pattern(:)', ...
-                round(length(sets.pvalue.pattern)/2));
+                pattern(:)', ...
+                round(length(pattern)/2));
               randShort = zeros(1, lenShortBp);
               refDotsBpRes = refDotsBpRes(2:end);
               randShort(refDotsBpRes) = bppx;
@@ -211,8 +216,7 @@ for psfPx=psfPx_all
             stretchMax, ...
             sets.pvalue.barcodeType);
           % Update progress bar
-          timespent = timespent + toc;
-          estTimeRem = round(timespent/i*(sets.pvalue.numRnd-i)/6)/10;
+          estTimeRem = round(toc/i*(sets.pvalue.numRnd-i)/6)/10;
           waitbar( ...
             i/sets.pvalue.numRnd, ...
             f, ...

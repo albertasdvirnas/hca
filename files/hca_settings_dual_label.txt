@@ -18,7 +18,8 @@ saveinfoscores = 1; % if to save infoscores
 
 skipPrechoice = 1;
 prestretchMethod = 0; % 0 - do not prestretch % 1 - prestretch to common length
-theories = 'theories_2020-11-27_21_33_46_.txt'; % theories either as mat or directly txts
+theories = 'theories_2021-02-08_14_46_44_.txt'; % theories either as mat or directly txts
+% theories = 'theories_2020-11-27_21_33_46_.txt'; % theories either as mat or directly txts
 sparseTheories = 'theories_2020-11-27_21_34_39_.txt'; % theories either as mat or directly txts
 
 userDefinedSeqCushion = 50;
@@ -44,6 +45,7 @@ sparseFile = 'kymossparse.txt'; % txt file with sparse barcodes
 sparseMap = 1; % if sparseMap=1, then the dot barcode is already convolved with PSF
 % all the different setting choices
 askforsets = 1; % should we ask for settings
+
 [random]
 generate = 0; % generate random
 noOfCutouts = 2; % number of random cutouts from the input set
@@ -68,37 +70,41 @@ threshold = 0.75;
 savetxt = 1;
 
 [theory]
-askfortheory = 1;
+askfortheory = 0;
 precision = 5;  %default is 5;
 askfornmbp = 0;
+psfSigmaWidth_nm = 200;
+pixelWidth_nm = 108.33;
 nmbp = 0.32;
 skipStretch = 1;
-stretchFactors = .9:0.02:1.1;
-    
+stretchFactors = 1.05:0.01:1.15;
 
-[pvalue];    
-file = '';
+[duallabel]
 scoreFolder = 'D:\Arkivet\DNAdev\hca\files\randomScores\';
 fastaFolder = 'D:\Arkivet\DNAdev\hca\files\randomFasta\';
 paramFolder = 'D:\Arkivet\DNAdev\hca\files\';
+denseBarcodeType = 'ecodam';
+sparsePattern = 'CTTAAG';
+numPxMatchDiff = 50;
+doBitmask = true;
+
+[pvalue];    
+file = '';
 promtforparams = 0;
 len2 = 5000000;
 lenMin = 100;
 lenMax = 1000;
 numRnd = 1000;
-psfSigmaWidth_nm = 200;
-pixelWidth_nm = 108.33;
-nmbp = 0.32;
-pattern = 'CTTAAG';
-lenLong = 1e5;
+pattern = 'GATC';
+lenLong = 106666.6666666667;
 lenShort = 1000;
 stretchMax = 0;
-barcodeType = 'cb'; % cb, dots
-variableType = 'lenShort'; % lenLong, lenShort, stretchMax, psf
-varMin = 50;
-varStep = 50;
-varMax = 5000;
-cbRandomizationMethod = 'hybrid'; % phaseRandomization, hybrid, randn, sample, randg
+barcodeType = 'dots'; % cb, dots, ecodam
+variableType = 'lenLong'; % lenLong, lenShort, stretchMax, psf
+varMin = 106666.6666666667;
+varStep = 106666.6666666667;
+varMax = 5000e6;
+cbRandomizationMethod = 'randn'; % phaseRandomization, hybrid, randn, sample, randg
     
 [output]
 matDirpath = ''
