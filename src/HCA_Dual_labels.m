@@ -27,9 +27,11 @@ function [hcaStruct] = HCA_Dual_labels(sets, hcaStruct)
     import DL.Hca.import_single_timeframe_barcodes
     barcodeGenDense = import_single_timeframe_barcodes(sets);
     
-    for i = 1:length(barcodeGenDense)
-      thisBarcode = barcodeGenDense{i}.rawBarcode;
-      barcodeGenDense{i}.rawBitmask = barcodeGenDense{i}.rawBitmask .* not(isoutlier(thisBarcode, 'ThresholdFactor', 5));
+    if sets.duallabel.doBitmask
+      for i = 1:length(barcodeGenDense)
+        thisBarcode = barcodeGenDense{i}.rawBarcode;
+        barcodeGenDense{i}.rawBitmask = barcodeGenDense{i}.rawBitmask .* not(isoutlier(thisBarcode, 'ThresholdFactor', 5));
+      end
     end
 
     if size(barcodeGenDense, 1) > 1
@@ -63,7 +65,7 @@ function [hcaStruct] = HCA_Dual_labels(sets, hcaStruct)
       refStartPosBp = min(molDataTable.RefStartPos(tableIds), molDataTable.RefEndPos(tableIds));
       qryFirstDotPos = min(molDataTable.QryStartPos(tableIds), molDataTable.QryLen(tableIds) - molDataTable.QryStartPos(tableIds));
       externalAlignmentStruct.firstDotPos = qryFirstDotPos ./ molDataTable.QryLen(tableIds) .* molDataTable.Length(tableIds) / 375;
-      externalAlignmentStruct.pos = max(1, ceil(refStartPosBp / sets.pvalue.pixelWidth_nm * sets.pvalue.nmbp - externalAlignmentStruct.firstDotPos));
+      externalAlignmentStruct.pos = max(1, ceil(refStartPosBp / sets.theory.pixelWidth_nm * sets.theory.nmbp - externalAlignmentStruct.firstDotPos));
       externalAlignmentStruct.or = strcmp(molDataTable.Orientation(tableIds), '-') + 1;
 
       if length(theoryStruct) > 1

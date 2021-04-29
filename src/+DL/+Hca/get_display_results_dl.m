@@ -25,8 +25,8 @@ lengthBorders = cumsum(cellfun(@(x) x.length, theoryStruct));
 numBar = length(comparisonStruct);
 
 maxcoef = cell2mat(cellfun(@(x) x.dual.maxcoef,comparisonStruct,'UniformOutput',false)');
-maxcoefDense = cell2mat(cellfun(@(x) x.dense.maxcoef,comparisonStruct,'UniformOutput',false)');
-maxcoefSparse = cell2mat(cellfun(@(x) x.sparse.maxcoef,comparisonStruct,'UniformOutput',false)');
+maxcoefDense = cell2mat(cellfun(@(x) x.ch1.maxcoef,comparisonStruct,'UniformOutput',false)');
+maxcoefSparse = cell2mat(cellfun(@(x) x.ch2.maxcoef,comparisonStruct,'UniformOutput',false)');
 [~, ii] = max(maxcoef(:,1));
 
 % plot best positions
@@ -84,7 +84,7 @@ hold off
 
 
 % b = 1;
-% btype = {'dual', 'dense', 'sparse'};
+% btype = {'dual', 'ch1', 'ch2'};
 % for i=1:numBar
 % %   [maxAll, b] = max([maxcoef(i,1) maxcoefDense(i,1) maxcoefSparse(i,1)]);
 % %   if maxcoefDense(i,1) < 3; continue; end

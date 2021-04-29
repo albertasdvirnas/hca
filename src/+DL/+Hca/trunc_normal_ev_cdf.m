@@ -30,8 +30,8 @@ if nargin < 7 || ~extraPrecision
     p = ((ncdf(eta) - alph2)/(bet2 - alph2)).^n;
   end
 else
-  alph3 = ncdf(alph);
-  bet3 = ncdf(bet);
+  alph3 = vpa_ncdf(alph);
+  bet3 = vpa_ncdf(bet);
   if length(m) > 1 || length(s) > 1
     % This operation is extremely slow using vpa :(
     bet4 = repmat(bet3 - alph3, length(x), 1);

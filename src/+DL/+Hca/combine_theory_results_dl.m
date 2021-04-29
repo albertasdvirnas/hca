@@ -13,15 +13,19 @@ function [ rezMaxC ] = combine_theory_results_dl(theoryStruct, rezMax)
 rezMaxC = cell(1, length(rezMax{1}));
 
 for i=1:length(rezMax{1})
-  for btype = ["dual", "dense", "sparse", "external"]
-    thisRezMax = cellfun(@(x) ...
-      cellfun(@(y) subsref(y, substruct('.', btype)), x, 'un', 0), ...
-      rezMax, 'un', 0);
-    maxCoefs = cellfun(@(x) x{i}.maxcoef(1), thisRezMax);
-    [~, thrInd] = nanmax(maxCoefs);
-    newRexMax = thisRezMax{thrInd}{i};
-    newRexMax.idx = thrInd;
-    newRexMax.name = theoryStruct{thrInd}.name;
-    rezMaxC{i} = subsasgn(rezMaxC{i}, substruct('.', btype), newRexMax);
+  for btype = ["dual", "ch1", "ch2", "external"]
+    try
+      thisRezMax = cellfun(@(x) ...
+        cellfun(@(y) subsref(y, substruct('.', btype)), x, 'un', 0), ...
+        rezMax, 'un', 0);
+      maxCoefs = cellfun(@(x) x{i}.maxcoef(1), thisRezMax);
+      [~, thrInd] = nanmax(maxCoefs);
+      newRexMax = thisRezMax{thrInd}{i};
+      newRexMax.idx = thrInd;
+      newRexMax.name = theoryStruct{thrInd}.name;
+      rezMaxC{i} = subsasgn(rezMaxC{i}, substruct('.', btype), newRexMax);
+    catch
+      warning("Could not assign result of barcode %.0f of type: %s\n", i, btype)
+    end
   end
 end

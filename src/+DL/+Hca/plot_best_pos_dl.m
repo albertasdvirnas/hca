@@ -4,12 +4,12 @@ function [fig1] = plot_best_pos_dl( fig1,comparisonStruct, numBar, sets, markers
 cumLengths = [0 lengthBorders]';
 
 posShift = cumLengths(cellfun(@(x) x.dual.idx,comparisonStruct)');
-posShiftDense = cumLengths(cellfun(@(x) x.dense.idx,comparisonStruct)');
-posShiftSparse = cumLengths(cellfun(@(x) x.sparse.idx,comparisonStruct)');
+posShiftDense = cumLengths(cellfun(@(x) x.ch1.idx,comparisonStruct)');
+posShiftSparse = cumLengths(cellfun(@(x) x.ch2.idx,comparisonStruct)');
 
 pos = cell2mat(cellfun(@(x) x.dual.pos(1:numToPlot),comparisonStruct,'UniformOutput',0)');
-posDense = cell2mat(cellfun(@(x) x.dense.pos(1:numToPlot),comparisonStruct,'UniformOutput',0)');
-posSparse = cell2mat(cellfun(@(x) x.sparse.pos(1:numToPlot),comparisonStruct,'UniformOutput',0)');
+posDense = cell2mat(cellfun(@(x) x.ch1.pos(1:numToPlot),comparisonStruct,'UniformOutput',0)');
+posSparse = cell2mat(cellfun(@(x) x.ch2.pos(1:numToPlot),comparisonStruct,'UniformOutput',0)');
 
 r = plot(posSparse+posShiftSparse,1:size(posSparse,1),'ok', 'MarkerSize', 6);
 hold on

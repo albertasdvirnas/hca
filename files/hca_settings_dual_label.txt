@@ -78,15 +78,22 @@ pixelWidth_nm = 108.33;
 nmbp = 0.32;
 skipStretch = 1;
 stretchFactors = 1.05:0.01:1.15;
+totalNumBp = 3088286401;
 
 [duallabel]
 scoreFolder = 'D:\Arkivet\DNAdev\hca\files\randomScores\';
 fastaFolder = 'D:\Arkivet\DNAdev\hca\files\randomFasta\';
 paramFolder = 'D:\Arkivet\DNAdev\hca\files\';
-denseBarcodeType = 'ecodam';
-sparsePattern = 'CTTAAG';
+barTypeCh1 = 'dense';
+barTypeCh2 = 'sparse';
+pathZeroModelCh1 = 'D:\Arkivet\DNAdev\hca\files\ecodam_zero_model_params.txt';
+pathZeroModelCh2 = 'D:\Arkivet\DNAdev\hca\files\dots_CTTAAG_zero_model_params.txt';
+ccThreshCh1 = 5;
+ccThreshCh2 = 5;
 numPxMatchDiff = 50;
 doBitmask = true;
+stretchTolerance = 2;
+positionTolerance = 5;
 
 [pvalue];    
 file = '';
