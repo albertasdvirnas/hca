@@ -18,7 +18,7 @@ function [dist] = MASS_PCC(x, y, k)
     %x is the data, y is the query
     m = length(y);
     n = length(x);
-    dist = zeros(2,n-m+1);
+    dist = zeros(2,n);
 
     %compute y stats -- O(n)
     y = zscore(y,1); % zcore(y) if want to use std with /(m-1)

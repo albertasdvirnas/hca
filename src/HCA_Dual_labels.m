@@ -83,7 +83,7 @@ function [hcaStruct] = HCA_Dual_labels(sets, hcaStruct)
 
     for barNr = 1:length(theoryStruct)
       disp(strcat(['comparing to theory barcode ' num2str(barNr) '_' theoryStruct{barNr}.filename]));
-      rezMax{barNr} = on_compare_dual_label(barcodeGen, theoryStruct{barNr}, sets, externalAlignmentStruct);
+      rezMax{barNr} = on_compare_dual_label(barcodeGen, theoryStruct{barNr}, sets);
     end
 
     assignin('base', 'rezMax', rezMax)

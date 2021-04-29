@@ -1,13 +1,7 @@
-function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externalAlignmentStruct)
+function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets)
   import CBT.Hca.Import.load_pval_struct;
   import CBT.Hca.UI.Helper.get_best_parameters;
   import DL.Hca.compute_zval
-  
-  if isfield(externalAlignmentStruct, 'molIds')
-    doExternal = true;
-  else
-    doExternal = false;
-  end
 
   %% Temp hardcoded settings
   digits(64) % Number of digits precision.
@@ -164,21 +158,7 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
     rezMax.ch2.maxcoefParts = [arrayfun(@(i) zCh1All{d}(rezMax.ch2.or(i), rezMax.ch2.pos(i)), 1:3); arrayfun(@(i) zCh2All{d}(rezMax.ch2.or(i), rezMax.ch2.pos(i)), 1:3)];
     rezMax.ch2.maxcoefPartsCC = [arrayfun(@(i) xCh1All{d}(rezMax.ch2.or(i), rezMax.ch2.pos(i)), 1:3); arrayfun(@(i) xCh2All{d}(rezMax.ch2.or(i), rezMax.ch2.pos(i)), 1:3)];
 
-    if doExternal
-      [~, e] = ismember(1, stretchFactors);
-      rezMax.external = struct();
-      rezMax.external.pos = externalAlignmentStruct.pos(idx);
-      rezMax.external.or = externalAlignmentStruct.or(idx);
-      rezMax.external.maxcoef = nansum([zCh1All{e}(rezMax.external.or, rezMax.external.pos), zCh2All{e}(rezMax.external.or, rezMax.external.pos)]);
-      rezMax.external.maxcoefParts = [zCh1All{e}(rezMax.external.or, rezMax.external.pos); zCh2All{e}(rezMax.external.or, rezMax.external.pos)];
-      rezMax.external.maxcoefPartsCC = [xCh1All{e}(rezMax.external.or, rezMax.external.pos); xCh2All{e}(rezMax.external.or, rezMax.external.pos)];
-      rezMax.external.bestBarStretch = 1;
-      rezMax.external.bestLength = lenBarCh2;
-      fprintf("Barcode:\t%.0f\n\tS-Combined:\t%.2f\n\tS-Channel1:\t%.2f\n\tS-Channel2:\t%.2f\n\tS-External:\t%.2f\n", idx, rezMax.dual.maxcoef(1), rezMax.ch1.maxcoef(1), rezMax.ch2.maxcoef(1), rezMax.external.maxcoef)
-    else
-      fprintf("Barcode:\t%.0f\n\tS-Combined:\t%.2f\n\tS-Channel1:\t%.2f\n\tS-Channel2:\t%.2f\n", idx, rezMax.dual.maxcoef(1), rezMax.ch1.maxcoef(1), rezMax.ch2.maxcoef(1))
-    end
-    
+    fprintf("Barcode:\t%.0f\n\tS-Combined:\t%.2f\n\tS-Channel1:\t%.2f\n\tS-Channel2:\t%.2f\n", idx, rezMax.dual.maxcoef(1), rezMax.ch1.maxcoef(1), rezMax.ch2.maxcoef(1))
     fprintf("\tPos. Offset:\t%.0f\n\tStr. Offset:\t%.0f\n", rezMax.dual.posOffset(1), rezMax.dual.stretchOffset(1))
 
     rezMaxM{idx} = rezMax;
