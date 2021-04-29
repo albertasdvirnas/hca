@@ -12,13 +12,13 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
   end
 
   %% Change to balance precision/speed
-  digits(32) % Number of digits precision.
-  xThreshDense = 0.3; % Minimum value of CC to calculate score.
-  xThreshSparse = 0.5; % Minimum value of CC to calculate score.
+  digits(64) % Number of digits precision.
+  xThreshDense = 5;
+  xThreshSparse = 4;
   quenchPointsLow = linspace(0.001, 0.999, 31);
   quenchPointsHi = linspace(0.001, 0.999, 51);
-  stretchTol = 2;
-  posTol = 5;
+  stretchTolerance = 2;
+  positionTolerance = 5;
 
   %% load theory barcode txt file.
   formatSpec = '%f';
@@ -31,11 +31,12 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
 
   try
     fileID = fopen(strrep(theoryStruct.filename, 'barcode', 'bitmask'), 'r');
-    theorBit = transpose(fscanf(fileID, formatSpec));
+    theorUnkCount = transpose(fscanf(fileID, formatSpec));
     fclose(fileID);
   catch
-    theorBit = true(size(theorBar1));
+    theorUnkCount = zeros(size(theorBar1));
   end
+  theorBitmask = true(size(theorBar1));
 
   %% Load zero-model params
   theoryNumPixels = 3088286401 / sets.theory.pixelWidth_nm * sets.theory.nmbp;
@@ -77,7 +78,7 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
   barcodeGenDense = barcodeGen(1, :);
   barcodeGenSparse = barcodeGen(2, :);
 
-  parfor idx = 1:numBarcodes
+  for idx = 1:numBarcodes
 
     rezMax = struct();
 
@@ -106,7 +107,7 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
 
       % Dense scores
       if doBitmasking
-        xDense = masked_pcc_corr(thisBarDense, theorBar1, thisBitmask, true(size(theorBar1)));
+        xDense = masked_pcc_corr(thisBarDense, theorBar1, thisBitmask, theorBitmask);
         nuLenBar = sum(thisBitmask);
       else
         xDense = MASS_PCC(theorBar1, thisBarDense, 2^(4 + nextpow2(lenBarDenseStretched)));
@@ -114,7 +115,7 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
       end
 
       lambdaEffDense = cbParamLambda * cbParamExa * numStretchFactors * (theoryNumPixels - lenBarDenseStretched);
-      doZScore = xDense > xThreshDense;
+      doZScore = xDense > nanstd(xDense(:)) * xThreshDense;
       zDense = zeros(size(xDense));
       zDense(doZScore) = -2 * log(vpa(1) - beta_ev_cdf(xDense(doZScore), max(4, cbParamNu * nuLenBar), 1, lambdaEffDense));
       
@@ -125,7 +126,7 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
       xSparse = MASS_DOT_CC(theorBar2, thisBarSparse, 2^(4 + nextpow2(lenBarSparseStretched)));
       
       lambdaEffSparse = dotParamLambda * dotParamExa * numStretchFactors * (theoryNumPixels - lenBarSparseStretched);
-      doZScore = xSparse > xThreshSparse;
+      doZScore = xSparse > nanmean(xSparse(:)) + nanstd(xSparse(:)) * xThreshSparse;
       zSparse = zeros(size(xSparse));
       zSparse(doZScore) = -2 * log(vpa(1) - trunc_normal_ev_cdf(xSparse(doZScore), norminv(quenchPointsLow, dotParamMu, 1 / sqrt(dotParamXi * lenBarSparseStretched)), 1 / sqrt(dotParamSigma * lenBarSparseStretched), lambdaEffSparse, 0, 1));
       
@@ -145,17 +146,15 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
     stretchOffset = cell(1, numStretchFactors);
 
     for j = 1:numStretchFactors
-      stretchIds = max(1, j - stretchTol):min(numStretchFactors, j + stretchTol);
+      stretchIds = max(1, j - stretchTolerance):min(numStretchFactors, j + stretchTolerance);
 
       thisSparseZ = zSparseAll{j};
-      thisDualZ = zeros([size(zSparseAll{j}), length(stretchIds), 2 * posTol + 1]);
-      
-      comShift = ;
+      thisDualZ = zeros([size(zSparseAll{j}), length(stretchIds), 2 * positionTolerance + 1]);
 
       for k = 1:length(stretchIds)
-        for m = 1:2 * posTol + 1
-          shift = -(m - posTol - 1);
-          thisDualZ(:, :, k, m) = nansum(cat(4, thisSparseZ, circshift(zDenseAll{stretchIds(k)}, [0 shift 0])), 4);
+        for m = 1:2 * positionTolerance + 1
+          shift = -(m - positionTolerance - 1);
+          thisDualZ(:, :, k, m) = nansum(cat(3, thisSparseZ, circshift(zDenseAll{stretchIds(k)}, [0 shift])), 3);
         end
       end
 
@@ -164,18 +163,23 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
       [~, tmpStretch] = nanmax(tmpScoreMat1, [], 3);
       [zDualAll{j}, tmpPos] = nanmax(tmpScoreMat2, [], 4);
       stretchOffset{j} = reshape(stretchIds(tmpStretch) - j, size(zSparseAll{j}));
-      posOffset{j} = reshape(tmpPos - posTol - 1, size(zSparseAll{j}));
+      posOffset{j} = reshape(tmpPos - positionTolerance - 1, size(zSparseAll{j}));
+      
+      isUnchanged = zDualAll{j} == zDenseAll{j} | zDualAll{j} == zSparseAll{j};
+      stretchOffset{j}(isUnchanged) = 0;
+      posOffset{j}(isUnchanged) = 0;
     end
 
     % Get best stretchF for individual barcodes
-    [~, b] = nanmax(cellfun(@(x) nanmax(x, [], 'all'), zDualAll));
-    [~, c] = nanmax(cellfun(@(x) nanmax(x, [], 'all'), zDenseAll));
-    [~, d] = nanmax(cellfun(@(x) nanmax(x, [], 'all'), zSparseAll));
+    tmpLongestBar = round(max(lenBarDense, lenBarSparse) * stretchFactors(end));
+    [~, b] = nanmax(cellfun(@(x) get_best_parameters(x, 1, tmpLongestBar, 1, numPxMatchDiff, theorUnkCount), zDualAll));
+    [~, c] = nanmax(cellfun(@(x) get_best_parameters(x, 1, tmpLongestBar, 1, numPxMatchDiff, theorUnkCount), zDenseAll));
+    [~, d] = nanmax(cellfun(@(x) get_best_parameters(x, 1, tmpLongestBar, 1, numPxMatchDiff, theorUnkCount), zSparseAll));
 
     rezMax.dual = struct();
     rezMax.dual.bestBarStretch = stretchFactors(b);
-    rezMax.dual.bestLength = round(lenBarDense * stretchFactors(b));
-    [rezMax.dual.maxcoef, rezMax.dual.pos, rezMax.dual.or] = get_best_parameters(zDualAll{b}, 3, rezMax.dual.bestLength, 1, numPxMatchDiff, theorBit);
+    rezMax.dual.bestLength = round(max(lenBarDense, lenBarSparse) * stretchFactors(b));
+    [rezMax.dual.maxcoef, rezMax.dual.pos, rezMax.dual.or] = get_best_parameters(zDualAll{b}, 3, rezMax.dual.bestLength, 1, numPxMatchDiff, theorUnkCount);
     rezMax.dual.posOffset = arrayfun(@(i) posOffset{b}(rezMax.dual.or(i), rezMax.dual.pos(i)), 1:3);
     rezMax.dual.stretchOffset = arrayfun(@(i) stretchOffset{b}(rezMax.dual.or(i), rezMax.dual.pos(i)), 1:3);
     optPos = max(1, rezMax.dual.pos + rezMax.dual.posOffset);
@@ -186,31 +190,34 @@ function rezMaxM = on_compare_dual_label(barcodeGen, theoryStruct, sets, externa
 
     rezMax.dense = struct();
     rezMax.dense.bestBarStretch = stretchFactors(c);
-    rezMax.dense.bestLength = round(lenBarDense * stretchFactors(d));
-    [rezMax.dense.maxcoef, rezMax.dense.pos, rezMax.dense.or] = get_best_parameters(zDenseAll{c}, 3, lenBarDense, 1, numPxMatchDiff, theorBit);
+    rezMax.dense.bestLength = round(lenBarDense * stretchFactors(c));
+    [rezMax.dense.maxcoef, rezMax.dense.pos, rezMax.dense.or] = get_best_parameters(zDenseAll{c}, 3, rezMax.dense.bestLength, 1, numPxMatchDiff, theorUnkCount);
     rezMax.dense.maxcoefParts = [arrayfun(@(i) zDenseAll{c}(rezMax.dense.or(i), rezMax.dense.pos(i)), 1:3); arrayfun(@(i) zSparseAll{c}(rezMax.dense.or(i), rezMax.dense.pos(i)), 1:3)];
     rezMax.dense.maxcoefPartsCC = [arrayfun(@(i) xDenseAll{c}(rezMax.dense.or(i), rezMax.dense.pos(i)), 1:3); arrayfun(@(i) xSparseAll{c}(rezMax.dense.or(i), rezMax.dense.pos(i)), 1:3)];
 
     rezMax.sparse = struct();
     rezMax.sparse.bestBarStretch = stretchFactors(d);
     rezMax.sparse.bestLength = round(lenBarSparse * stretchFactors(d));
-    [rezMax.sparse.maxcoef, rezMax.sparse.pos, rezMax.sparse.or] = get_best_parameters(zSparseAll{d}, 3, lenBarSparse, 1, numPxMatchDiff, theorBit);
+    [rezMax.sparse.maxcoef, rezMax.sparse.pos, rezMax.sparse.or] = get_best_parameters(zSparseAll{d}, 3, rezMax.sparse.bestLength, 1, numPxMatchDiff, theorUnkCount);
     rezMax.sparse.maxcoefParts = [arrayfun(@(i) zDenseAll{d}(rezMax.sparse.or(i), rezMax.sparse.pos(i)), 1:3); arrayfun(@(i) zSparseAll{d}(rezMax.sparse.or(i), rezMax.sparse.pos(i)), 1:3)];
     rezMax.sparse.maxcoefPartsCC = [arrayfun(@(i) xDenseAll{d}(rezMax.sparse.or(i), rezMax.sparse.pos(i)), 1:3); arrayfun(@(i) xSparseAll{d}(rezMax.sparse.or(i), rezMax.sparse.pos(i)), 1:3)];
 
     if doExternal
+      [~, e] = ismember(1, stretchFactors);
       rezMax.external = struct();
       rezMax.external.pos = externalAlignmentStruct.pos(idx);
       rezMax.external.or = externalAlignmentStruct.or(idx);
-      rezMax.external.maxcoef = nansum([zDenseAll{d}(rezMax.external.or, rezMax.external.pos), zSparseAll{d}(rezMax.external.or, rezMax.external.pos)]);
-      rezMax.external.maxcoefParts = [zDenseAll{d}(rezMax.external.or, rezMax.external.pos); zSparseAll{d}(rezMax.external.or, rezMax.external.pos)];
-      rezMax.external.maxcoefPartsCC = [xDenseAll{d}(rezMax.external.or, rezMax.external.pos); xSparseAll{d}(rezMax.external.or, rezMax.external.pos)];
+      rezMax.external.maxcoef = nansum([zDenseAll{e}(rezMax.external.or, rezMax.external.pos), zSparseAll{e}(rezMax.external.or, rezMax.external.pos)]);
+      rezMax.external.maxcoefParts = [zDenseAll{e}(rezMax.external.or, rezMax.external.pos); zSparseAll{e}(rezMax.external.or, rezMax.external.pos)];
+      rezMax.external.maxcoefPartsCC = [xDenseAll{e}(rezMax.external.or, rezMax.external.pos); xSparseAll{e}(rezMax.external.or, rezMax.external.pos)];
       rezMax.external.bestBarStretch = 1;
       rezMax.external.bestLength = lenBarSparse;
-      fprintf("Barcode:\t%.0f\n\tS-Combined:\t%.2f\n\tS-Dense:\t%.2f\n\tS-Sparse:\t%.2f\n\tS-Ext:\t%.2f\n\tS-Dual:\t%.2f\n", idx, rezMax.dual.maxcoef(1), rezMax.dense.maxcoef(1), rezMax.sparse.maxcoef(1), rezMax.external.maxcoef)
+      fprintf("Barcode:\t%.0f\n\tS-Combined:\t%.2f\n\tS-Dense:\t%.2f\n\tS-Sparse:\t%.2f\n\tS-External:\t%.2f\n", idx, rezMax.dual.maxcoef(1), rezMax.dense.maxcoef(1), rezMax.sparse.maxcoef(1), rezMax.external.maxcoef)
     else
       fprintf("Barcode:\t%.0f\n\tS-Combined:\t%.2f\n\tS-Dense:\t%.2f\n\tS-Sparse:\t%.2f\n", idx, rezMax.dual.maxcoef(1), rezMax.dense.maxcoef(1), rezMax.sparse.maxcoef(1))
     end
+    
+    fprintf("\tPos. Offset:\t%.0f\n\tStr. Offset:\t%.0f\n", rezMax.dual.posOffset(1), rezMax.dual.stretchOffset(1))
 
     rezMaxM{idx} = rezMax;
 
